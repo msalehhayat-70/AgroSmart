@@ -175,7 +175,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dateTextApmc"
-            tools:listitem="@layout/apmc_single_list" />
+            tools:listitem="@layout/pamra_single_list" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
