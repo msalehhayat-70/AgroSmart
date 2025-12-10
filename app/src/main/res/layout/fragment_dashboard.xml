@@ -250,7 +250,7 @@
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:scaleType="fitXY"
-                                android:src="@drawable/yojna2"
+                                android:src="@drawable/pamra2"
                                 tools:ignore="ContentDescription" />
 
                             <TextView
