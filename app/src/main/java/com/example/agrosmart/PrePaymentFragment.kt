@@ -1,4 +1,4 @@
-package com.example.agrosmart
+package com.project.farmingapp
 
 import android.app.Activity
 import android.content.Intent

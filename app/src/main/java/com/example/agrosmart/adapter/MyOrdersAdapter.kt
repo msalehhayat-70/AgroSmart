@@ -1,73 +1,73 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
-import android.content.Intent
-import android.util.Log
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.project.farmingapp.R
-import com.project.farmingapp.utilities.CartItemBuy
-import com.project.farmingapp.utilities.CellClickListener
-import com.project.farmingapp.view.ecommerce.MyOrdersFragment
-import com.project.farmingapp.view.ecommerce.RazorPayActivity
-import com.project.farmingapp.viewmodel.EcommViewModel
-import kotlinx.android.synthetic.main.single_myorder_item.view.*
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
-import kotlin.collections.HashMap
+import com.example.agrosmart.R
+import com.example.agrosmart.model.MyOrder
+import com.example.agrosmart.model.Product
+import com.example.agrosmart.utilities.CartItemBuy
+import com.example.agrosmart.utilities.CellClickListener
 
 class MyOrdersAdapter(
-    val context: MyOrdersFragment,
-    val allData: HashMap<String, Object>,
-    val cellClickListener: CellClickListener,
-    val cartItemBuy: CartItemBuy
+    private val myOrders: List<Pair<MyOrder, Product>>,
+    private val cellClickListener: CellClickListener,
+    private val cartItemBuy: CartItemBuy
 ) : RecyclerView.Adapter<MyOrdersAdapter.MyOrdersViewHolder>() {
-    class MyOrdersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    class MyOrdersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val myOrderPinCode: TextView = itemView.findViewById(R.id.myOrderPinCode)
+        val myOrderItemName: TextView = itemView.findViewById(R.id.myOrderItemName)
+        val myOrderItemPrice: TextView = itemView.findViewById(R.id.myOrderItemPrice)
+        val myOderDeliveryCharge: TextView = itemView.findViewById(R.id.myOderDeliveryCharge)
+        val myOrderDeliveryStatus: TextView = itemView.findViewById(R.id.myOrderDeliveryStatus)
+        val myOderItemImage: ImageView = itemView.findViewById(R.id.myOderItemImage)
+        val myOrderTimeStamp: TextView = itemView.findViewById(R.id.myOrderTimeStamp)
+        val myOrderPurchaseAgain: Button = itemView.findViewById(R.id.myOrderPurchaseAgain)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyOrdersViewHolder {
-        val view = LayoutInflater.from(context.context)
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.single_myorder_item, parent, false)
         return MyOrdersViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return allData.size
+        return myOrders.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyOrdersViewHolder, position: Int) {
-        val myOrder = allData.entries.toTypedArray()[position].value as HashMap<String, Object>
-        val viewModel = EcommViewModel()
+        val (myOrder, product) = myOrders[position]
 
-        val currentItemAllData = viewModel.getSpecificItem("${myOrder.get("productId")}")
-            .observe(context, androidx.lifecycle.Observer {
-                Log.d("MyOrdersAdapter", it.toString())
-                holder.itemView.myOrderPinCode.text = myOrder.get("pincode").toString()
-                holder.itemView.myOrderItemName.text = it!!.getString("title")
-                holder.itemView.myOrderItemPrice.text =
-                    "\u20B9" + (myOrder.get("quantity").toString()
-                        .toInt() * myOrder.get("itemCost").toString()
-                        .toInt() + myOrder.get("deliveryCost").toString().toInt()).toString()
-                holder.itemView.myOrderPinCode.text =
-                    "Pin Code: " + myOrder.get("pincode").toString()
-                holder.itemView.myOderDeliveryCharge.text = myOrder.get("deliveryCost").toString()
-                holder.itemView.myOrderDeliveryStatus.text =
-                    myOrder.get("deliveryStatus").toString()
-                val allImages = it.get("imageUrl") as List<String>
-                Glide.with(context).load(allImages[0]).into(holder.itemView.myOderItemImage)
-                val date = myOrder.get("time").toString().split(" ") as List<String>
-                holder.itemView.myOrderTimeStamp.text = date[0].toString()
-            })
-        holder.itemView.myOrderPurchaseAgain.setOnClickListener {
-            cartItemBuy.addToOrders(myOrder.get("productId").toString(), myOrder.get("quantity").toString().toInt(), myOrder.get("itemCost").toString().toInt(), myOrder.get("deliveryCost").toString().toInt())
+        holder.myOrderItemName.text = product.title
+
+        if (product.imageUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context).load(product.imageUrl[0]).into(holder.myOderItemImage)
         }
+
         holder.itemView.setOnClickListener {
-            cellClickListener.onCellClickListener("${myOrder.get("productId")}")
+            cellClickListener.onCellClickListener(product.id)
+        }
+
+        val totalCost = (myOrder.quantity * myOrder.itemCost) + myOrder.deliveryCost
+
+        holder.myOrderPinCode.text = "Pin Code: ${myOrder.pincode}"
+        holder.myOrderItemPrice.text = "\u20B9$totalCost"
+        holder.myOderDeliveryCharge.text = myOrder.deliveryCost.toString()
+        holder.myOrderDeliveryStatus.text = myOrder.deliveryStatus
+
+        val time = myOrder.time.split(" ").getOrNull(0) ?: ""
+        holder.myOrderTimeStamp.text = time
+
+        holder.myOrderPurchaseAgain.setOnClickListener {
+            cartItemBuy.addToOrders(myOrder.productId, myOrder.quantity, myOrder.itemCost, myOrder.deliveryCost)
         }
     }
 }

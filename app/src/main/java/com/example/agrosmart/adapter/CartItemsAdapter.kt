@@ -1,106 +1,92 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
-import android.util.Log
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.project.farmingapp.R
-import com.project.farmingapp.utilities.CartItemBuy
-import com.project.farmingapp.view.ecommerce.CartFragment
-import com.project.farmingapp.viewmodel.EcommViewModel
-import kotlinx.android.synthetic.main.single_cart_item.view.*
+import com.example.agrosmart.R
+import com.example.agrosmart.model.CartItem
+import com.example.agrosmart.model.Product
+import com.example.agrosmart.utilities.CartItemBuy
 
 class CartItemsAdapter(
-    val context: CartFragment,
-    val allData: HashMap<String, Object>,
-    val cartitembuy: CartItemBuy
-) :
-    RecyclerView.Adapter<CartItemsAdapter.CartItemsViewHolder>() {
-    var itemCost = 0
-    var deliveryCharge = 0
-    var quantity = 0
-    class CartItemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val cartItems: List<Pair<CartItem, Product>>,
+    private val cartItemBuy: CartItemBuy
+) : RecyclerView.Adapter<CartItemsAdapter.CartItemsViewHolder>() {
 
+    class CartItemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val itemNameCart: TextView = itemView.findViewById(R.id.itemNameCart)
+        val itemPriceCart: TextView = itemView.findViewById(R.id.itemPriceCart)
+        val quantityCountEcomm: TextView = itemView.findViewById(R.id.quantityCountEcomm)
+        val deliveryChargeCart: TextView = itemView.findViewById(R.id.deliveryChargeCart)
+        val cartItemFirm: TextView = itemView.findViewById(R.id.cartItemFirm)
+        val cartItemAvailability: TextView = itemView.findViewById(R.id.cartItemAvailability)
+        val cartItemImage: ImageView = itemView.findViewById(R.id.cartItemImage)
+        val cartItemBuyBtn: Button = itemView.findViewById(R.id.cartItemBuyBtn)
+        val removeCartBtn: ImageView = itemView.findViewById(R.id.removeCartBtn)
+        val increaseQtyBtn: ImageButton = itemView.findViewById(R.id.increaseQtyBtn)
+        val decreaseQtyBtn: ImageButton = itemView.findViewById(R.id.decreaseQtyBtn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartItemsViewHolder {
-        val view = LayoutInflater.from(context.context).inflate(R.layout.single_cart_item, parent, false)
-        return CartItemsAdapter.CartItemsViewHolder(view)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.single_cart_item, parent, false)
+        return CartItemsViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return allData.size
+        return cartItems.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: CartItemsViewHolder, position: Int) {
-        val currentData = allData.entries.toTypedArray()[position]
-        val firebaseFirestore = FirebaseFirestore.getInstance()
-        val firebaseDatabase = FirebaseDatabase.getInstance()
-        val firebaseAuth = FirebaseAuth.getInstance()
+        val (cartItem, product) = cartItems[position]
 
-        val itemQtyRef =
-            firebaseDatabase.getReference("${firebaseAuth.currentUser!!.uid}").child("cart")
-                .child("${currentData.key}").child("quantity")
+        holder.itemNameCart.text = product.title
+        holder.itemPriceCart.text = "\u20B9${product.price}"
+        holder.quantityCountEcomm.text = cartItem.quantity.toString()
+        holder.deliveryChargeCart.text = product.delCharge.toString()
+        holder.cartItemFirm.text = product.retailer
+        holder.cartItemAvailability.text = product.availability
 
-        val itemRef =
-            firebaseDatabase.getReference("${firebaseAuth.currentUser!!.uid}").child("cart")
-                .child("${currentData.key}")
-
-        holder.itemView.cartItemBuyBtn.setOnClickListener {
-            var qty = holder.itemView.quantityCountEcomm.text.toString().toInt()
-            var itemPrice =
-                holder.itemView.itemPriceCart.text.toString().split("₹") as ArrayList<String>
-            var deliveryCharge = holder.itemView.deliveryChargeCart.text.toString().toInt()
-            Log.d("totalPrice", quantity.toString())
-            Log.d("totalPrice", itemCost.toString())
-            Log.d("totalPrice", deliveryCharge.toString())
-            cartitembuy.addToOrders("${currentData.key}", qty,itemPrice[1].toInt() , deliveryCharge)
+        if (product.imageUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context).load(product.imageUrl[0]).into(holder.cartItemImage)
         }
 
-        holder.itemView.removeCartBtn.setOnClickListener {
-            itemRef.removeValue()
+        val totalCost = (product.price * cartItem.quantity) + product.delCharge
+        holder.cartItemBuyBtn.text = "Buy Now: \u20B9$totalCost"
+
+        holder.cartItemBuyBtn.setOnClickListener {
+            cartItemBuy.addToOrders(
+                product.id,
+                cartItem.quantity,
+                product.price,
+                product.delCharge
+            )
         }
 
-        holder.itemView.increaseQtyBtn.setOnClickListener {
-
-            holder.itemView.quantityCountEcomm.text =
-                (holder.itemView.quantityCountEcomm.text.toString().toInt() + 1).toString()
-            itemQtyRef.setValue(holder.itemView.quantityCountEcomm.text.toString().toInt())
+        holder.removeCartBtn.setOnClickListener {
+            cartItemBuy.removeItem(product.id)
         }
 
-        holder.itemView.decreaseQtyBtn.setOnClickListener {
-            if (holder.itemView.quantityCountEcomm.text.toString().toInt() != 1) {
-                holder.itemView.quantityCountEcomm.text =
-                    (holder.itemView.quantityCountEcomm.text.toString().toInt() - 1).toString()
-                itemQtyRef.setValue(holder.itemView.quantityCountEcomm.text.toString().toInt())
+        holder.increaseQtyBtn.setOnClickListener {
+            val newQuantity = cartItem.quantity + 1
+            holder.quantityCountEcomm.text = newQuantity.toString()
+            cartItemBuy.updateQuantity(product.id, newQuantity)
+        }
+
+        holder.decreaseQtyBtn.setOnClickListener {
+            if (cartItem.quantity > 1) {
+                val newQuantity = cartItem.quantity - 1
+                holder.quantityCountEcomm.text = newQuantity.toString()
+                cartItemBuy.updateQuantity(product.id, newQuantity)
             }
         }
-
-        val curr = currentData.value as Map<String, Object>
-
-        val ecommViewModel = EcommViewModel()
-
-        ecommViewModel.getSpecificItem("${currentData.key}").observe(context, Observer {
-            itemCost = it.get("price").toString().toInt()
-            deliveryCharge = it.get("delCharge").toString().toInt()
-            quantity = curr.get("quantity").toString().toInt()
-            holder.itemView.itemNameCart.text = it.getString("title").toString()
-            holder.itemView.itemPriceCart.text = "\u20B9" + itemCost.toString()
-            holder.itemView.quantityCountEcomm.text = quantity.toString()
-            holder.itemView.deliveryChargeCart.text = deliveryCharge.toString()
-            holder.itemView.cartItemFirm.text = it.get("retailer").toString()
-            holder.itemView.cartItemAvailability.text = it.get("availability").toString()
-
-
-            val allImages = it.get("imageUrl") as ArrayList<String>
-            Glide.with(context).load(allImages[0].toString()).into(holder.itemView.cartItemImage)
-            holder.itemView.cartItemBuyBtn.text = "Buy Now: " + "\u20B9" + (itemCost!!*curr.get("quantity").toString().toInt() + deliveryCharge!!).toString()
-        })
     }
 }

@@ -1,83 +1,61 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.project.farmingapp.R
-import com.project.farmingapp.model.data.WeatherList
-import kotlinx.android.synthetic.main.post_with_image_sm.view.*
-import kotlinx.android.synthetic.main.single_currentweather.view.*
+import com.example.agrosmart.R
+import com.example.agrosmart.model.CurrentWeather
+import java.util.Locale
 
-class CurrentWeatherAdapter(val context: Context, val weatherrootdatas:List<WeatherList>):
+class CurrentWeatherAdapter(private val context: Context, private val weatherrootdatas: List<CurrentWeather>) :
     RecyclerView.Adapter<CurrentWeatherAdapter.CurrentWeatherViewHolder>() {
-    class CurrentWeatherViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        var Ctemp=itemView.findViewById<TextView>(R.id.temp)
-        var Cwedesc=itemView.findViewById<TextView>(R.id.desc)
-        var Cwelogo=itemView.findViewById<ImageView>(R.id.icon)
-        var CminTemp=itemView.findViewById<TextView>(R.id.minTemp)
-        var CmaxTemp=itemView.findViewById<TextView>(R.id.maxTemp)
-        var Chumidity=itemView.findViewById<TextView>(R.id.humidity)
-        var CtodayTitle=itemView.findViewById<TextView>(R.id.todayTitle)
-        var continer = itemView.findViewById<ConstraintLayout>(R.id.currentWeatherContainer)
 
-
-
-
-
+    class CurrentWeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cTemp: TextView = itemView.findViewById(R.id.temp)
+        val cWeDesc: TextView = itemView.findViewById(R.id.desc)
+        val cWeLogo: ImageView = itemView.findViewById(R.id.icon)
+        val cMinTemp: TextView = itemView.findViewById(R.id.minTemp)
+        val cMaxTemp: TextView = itemView.findViewById(R.id.maxTemp)
+        val cHumidity: TextView = itemView.findViewById(R.id.humidity)
+        val cTodayTitle: TextView = itemView.findViewById(R.id.todayTitle)
+        val container: ConstraintLayout = itemView.findViewById(R.id.currentWeatherContainer)
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): CurrentWeatherAdapter.CurrentWeatherViewHolder {
-        val view= LayoutInflater.from(context).inflate(R.layout.single_currentweather,parent,false)
-        return CurrentWeatherAdapter.CurrentWeatherViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrentWeatherViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.single_currentweather, parent, false)
+        return CurrentWeatherViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return weatherrootdatas.size
     }
 
-    override fun onBindViewHolder(holder: CurrentWeatherAdapter.CurrentWeatherViewHolder, position: Int) {
-        val weathernew =weatherrootdatas[position]
-        holder.Ctemp.text = (weathernew.main.temp - 273.15).toInt().toString() + "\u2103"
-        holder.Cwedesc.text = weathernew.weather[0].description.toString().capitalize()
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: CurrentWeatherViewHolder, position: Int) {
+        val weatherNew = weatherrootdatas[position]
+        holder.cTemp.text = "${(weatherNew.main.temp - 273.15).toInt()}\u2103"
+        holder.cWeDesc.text = weatherNew.weather[0].description.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
-        holder.CtodayTitle.text = "Today, " + weathernew.dt_txt.toString().slice(10..15)
+        holder.cTodayTitle.text = "Today, ${weatherNew.dt_txt.slice(10..15)}"
 
+        holder.cMinTemp.text = "${(weatherNew.main.temp_min.toDouble() - 273.1).toInt()}\u2103"
+        holder.container.animation = AnimationUtils.loadAnimation(context, R.anim.fade_scale)
 
-        Log.d("Something", weathernew.dt_txt.toString().slice(10..-1))
-
-//        var tempMin = ""
-//        for(a in weathernew.main.temp_min){
-//        }
-        var ss = weathernew.main.temp_min.length
-        holder.CminTemp.text = (weathernew.main.temp_min.toDouble() - 273.1).toInt().toString()+ "\u2103"
-//        holder.continer.animation = AnimationUtils.loadAnimation(context, R.anim.fade_scale)
-
-//        holder.itemView.setOnFocusChangeListener { view, b ->
-//
-//        }
-        holder.itemView.currentWeatherContainer.animation = AnimationUtils.loadAnimation(context, R.anim.fade_scale)
-
-        
-
-        holder.CmaxTemp.text = (weathernew.main.temp_max.toDouble() - 273.1).toInt().toString() + "\u2103"
-        holder.Chumidity.text = weathernew.main.humidity.toString() + "%"
-        var iconcode=weathernew.weather[0].icon.toString()
-        var iconurl = "https://openweathermap.org/img/w/" + iconcode + ".png";
+        holder.cMaxTemp.text = "${(weatherNew.main.temp_max.toDouble() - 273.1).toInt()}\u2103"
+        holder.cHumidity.text = "${weatherNew.main.humidity}%"
+        val iconCode = weatherNew.weather[0].icon
+        val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"
 
         Glide.with(holder.itemView.context)
-            .load(iconurl)
-            .into(holder.Cwelogo)
+            .load(iconUrl)
+            .into(holder.cWeLogo)
     }
 }

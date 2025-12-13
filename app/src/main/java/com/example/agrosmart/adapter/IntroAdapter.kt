@@ -1,4 +1,4 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.project.farmingapp.R
-import com.project.farmingapp.model.data.IntroData
+import com.example.agrosmart.R
+import com.example.agrosmart.model.IntroData
 
 class IntroAdapter(private val introSlides: List<IntroData>): RecyclerView.Adapter<IntroAdapter.IntroViewHolder>() {
     inner class IntroViewHolder(view: View) : RecyclerView.ViewHolder(view){

@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.yojna.YojnaFragment">
+    tools:context=".view.scheme.SchemeFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".yojnaMain"
+        tools:context=".schemeMain"
         tools:ignore="RedundantNamespace">
 
         <ProgressBar
             android:layout_width="wrap_content"
-            android:id="@+id/progressYojna"
+            android:id="@+id/progressScheme"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/yojnaImage"
+                    android:id="@+id/schemeImage"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
                     android:scaleType="fitXY"
@@ -49,7 +49,7 @@
                     tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
-                    android:id="@+id/yojnaTitle"
+                    android:id="@+id/schemeTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="14dp"
@@ -61,10 +61,10 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaImage" />
+                    app:layout_constraintTop_toBottomOf="@id/schemeImage" />
 
                 <TextView
-                    android:id="@+id/yojnaDesc"
+                    android:id="@+id/schemeDesc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="14dp"
@@ -78,7 +78,7 @@
                     android:textSize="17sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaTitle"
+                    app:layout_constraintTop_toBottomOf="@id/schemeTitle"
                     tools:ignore="UnusedAttribute" />
 
                 <View
@@ -88,53 +88,53 @@
                     android:layout_marginHorizontal="14dp"
                     android:layout_marginVertical="7dp"
                     android:background="@color/secondary"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaDesc" />
+                    app:layout_constraintTop_toBottomOf="@id/schemeDesc" />
 
                 <ImageView
-                    android:id="@+id/yojnaDateIcon"
+                    android:id="@+id/schemeDateIcon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginVertical="14dp"
                     android:layout_marginStart="14dp"
                     android:src="@drawable/c2"
-                    app:layout_constraintEnd_toEndOf="@id/yojnaDate"
-                    app:layout_constraintStart_toStartOf="@id/yojnaDate"
+                    app:layout_constraintEnd_toEndOf="@id/schemeDate"
+                    app:layout_constraintStart_toStartOf="@id/schemeDate"
                     app:layout_constraintTop_toBottomOf="@id/hr1"
                     app:tint="@color/colorPrimary"
                     tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
-                    android:id="@+id/yojnaDate"
+                    android:id="@+id/schemeDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="7dp"
                     android:text="@string/loading"
-                    app:layout_constraintEnd_toStartOf="@id/yojnaLaunchedBy"
+                    app:layout_constraintEnd_toStartOf="@id/schemeLaunchedBy"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaDateIcon" />
+                    app:layout_constraintTop_toBottomOf="@id/schemeDateIcon" />
 
                 <ImageView
-                    android:id="@+id/yojnaBudgetIcon"
+                    android:id="@+id/schemeBudgetIcon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginVertical="14dp"
                     android:layout_marginEnd="14dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/budget"
-                    app:layout_constraintEnd_toEndOf="@id/yojnaBudget"
-                    app:layout_constraintStart_toStartOf="@id/yojnaBudget"
+                    app:layout_constraintEnd_toEndOf="@id/schemeBudget"
+                    app:layout_constraintStart_toStartOf="@id/schemeBudget"
                     app:layout_constraintTop_toBottomOf="@id/hr1"
                     tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
-                    android:id="@+id/yojnaBudget"
+                    android:id="@+id/schemeBudget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="7dp"
                     android:text="@string/loading"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/yojnaLaunchedBy"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaBudgetIcon" />
+                    app:layout_constraintStart_toEndOf="@id/schemeLaunchedBy"
+                    app:layout_constraintTop_toBottomOf="@id/schemeBudgetIcon" />
 
                 <ImageView
                     android:id="@+id/launchedByIcon"
@@ -143,20 +143,20 @@
                     android:layout_marginHorizontal="7dp"
                     android:layout_marginVertical="14dp"
                     android:src="@drawable/c2"
-                    app:layout_constraintEnd_toEndOf="@id/yojnaLaunchedBy"
-                    app:layout_constraintStart_toStartOf="@id/yojnaLaunchedBy"
+                    app:layout_constraintEnd_toEndOf="@id/schemeLaunchedBy"
+                    app:layout_constraintStart_toStartOf="@id/schemeLaunchedBy"
                     app:layout_constraintTop_toBottomOf="@id/hr1"
                     app:tint="@color/colorPrimary"
                     tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
-                    android:id="@+id/yojnaLaunchedBy"
+                    android:id="@+id/schemeLaunchedBy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="7dp"
                     android:text="@string/loading"
-                    app:layout_constraintEnd_toStartOf="@id/yojnaBudget"
-                    app:layout_constraintStart_toEndOf="@id/yojnaDate"
+                    app:layout_constraintEnd_toStartOf="@id/schemeBudget"
+                    app:layout_constraintStart_toEndOf="@id/schemeDate"
                     app:layout_constraintTop_toBottomOf="@id/launchedByIcon" />
 
                 <View
@@ -166,7 +166,7 @@
                     android:layout_marginHorizontal="14dp"
                     android:layout_marginVertical="7dp"
                     android:background="@color/secondary"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaDate" />
+                    app:layout_constraintTop_toBottomOf="@id/schemeDate" />
 
                 <TextView
                     android:id="@+id/eligibilityTitle"
@@ -182,7 +182,7 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/yojnaEligibility"
+                    android:id="@+id/schemeEligibility"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="14dp"
@@ -207,11 +207,11 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaEligibility"
+                    app:layout_constraintTop_toBottomOf="@id/schemeEligibility"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/yojnaDocumentsRequired"
+                    android:id="@+id/schemeDocumentsRequired"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="14dp"
@@ -236,11 +236,11 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaDocumentsRequired"
+                    app:layout_constraintTop_toBottomOf="@id/schemeDocumentsRequired"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/yojnaObjectives"
+                    android:id="@+id/schemeObjectives"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="14dp"
@@ -266,11 +266,11 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/yojnaObjectives"
+                    app:layout_constraintTop_toBottomOf="@id/schemeObjectives"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/yojnaWebsite"
+                    android:id="@+id/schemeWebsite"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="7dp"

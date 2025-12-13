@@ -1,53 +1,58 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.view.menu.MenuView
+import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.project.farmingapp.R
-import com.project.farmingapp.utilities.CellClickListener
-import kotlinx.android.synthetic.main.post_with_image_sm.view.*
-import kotlinx.android.synthetic.main.single_ecomm_item.view.*
+import com.example.agrosmart.R
+import com.example.agrosmart.model.EcommItem
+import com.example.agrosmart.utilities.CellClickListener
 
-class EcommerceAdapter(val context: Context, val ecommtListData : List<DocumentSnapshot>, private val cellClickListener: CellClickListener):RecyclerView.Adapter<EcommerceAdapter.EcommercceViewModel>() {
+class EcommerceAdapter(
+    private val context: Context,
+    private val ecommtListData: List<EcommItem>,
+    private val cellClickListener: CellClickListener
+) : RecyclerView.Adapter<EcommerceAdapter.EcommercceViewModel>() {
 
-    lateinit var firebaseAuth: FirebaseAuth
-    lateinit var firebaseFirestore: FirebaseFirestore
-    class EcommercceViewModel(itemView: View):RecyclerView.ViewHolder(itemView) {
-
+    class EcommercceViewModel(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val ecommtitle: TextView = itemView.findViewById(R.id.ecommtitle)
+        val ecommPrice: TextView = itemView.findViewById(R.id.ecommPrice)
+        val ecommretailer: TextView = itemView.findViewById(R.id.ecommretailer)
+        val ecommItemAvailability: TextView = itemView.findViewById(R.id.ecommItemAvailability)
+        val ecommImage: ImageView = itemView.findViewById(R.id.ecommImage)
+        val ecommRating: RatingBar = itemView.findViewById(R.id.ecommRating)
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): EcommerceAdapter.EcommercceViewModel {
+    ): EcommercceViewModel {
         val view = LayoutInflater.from(context).inflate(R.layout.single_ecomm_item, parent, false)
-        return EcommerceAdapter.EcommercceViewModel(view)
+        return EcommercceViewModel(view)
     }
 
     override fun getItemCount(): Int {
         return ecommtListData.size
     }
 
-    override fun onBindViewHolder(holder: EcommerceAdapter.EcommercceViewModel, position: Int) {
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: EcommercceViewModel, position: Int) {
         val currentList = ecommtListData[position]
-        holder.itemView.ecommtitle.text = currentList.get("title").toString()
-        holder.itemView.ecommPrice.text = "\u20B9 "+currentList.get("price").toString()
-        holder.itemView.ecommretailer.text = currentList.get("retailer").toString()
-        holder.itemView.ecommItemAvailability.text = currentList.get("availability").toString()
-        val allImages = currentList.get("imageUrl") as List<String>
-        Glide.with(context).load(allImages[0].toString()).into(holder.itemView.ecommImage)
-        holder.itemView.ecommRating.rating = currentList.get("rating").toString().toFloat()
+        holder.ecommtitle.text = currentList.title
+        holder.ecommPrice.text = "\u20B9 ${currentList.price}"
+        holder.ecommretailer.text = currentList.retailer
+        holder.ecommItemAvailability.text = currentList.availability
+        Glide.with(context).load(currentList.imageUrl[0]).into(holder.ecommImage)
+        holder.ecommRating.rating = currentList.rating
 
-       holder.itemView.setOnClickListener {
-           cellClickListener.onCellClickListener(currentList.id.toString())
-       }
-
+        holder.itemView.setOnClickListener {
+            cellClickListener.onCellClickListener(currentList.id)
+        }
     }
 }

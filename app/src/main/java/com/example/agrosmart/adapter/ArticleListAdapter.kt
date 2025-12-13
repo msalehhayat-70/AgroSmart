@@ -1,4 +1,4 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,56 +8,44 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.firestore.DocumentSnapshot
-import com.project.farmingapp.R
-import com.project.farmingapp.utilities.CellClickListener
+import com.example.agrosmart.R
+import com.example.agrosmart.model.Article
+import com.example.agrosmart.utilities.CellClickListener
 
 class ArticleListAdapter(
-    private val articleListData: List<DocumentSnapshot>,
+    private val articleListData: List<Article>,
     private val cellClickListener: CellClickListener
-) : RecyclerView.Adapter<ArticleListAdapter.ArticleListViewholder>() {
+) : RecyclerView.Adapter<ArticleListAdapter.ArticleListViewHolder>() {
 
-    // Inner class for the ViewHolder to prevent potential memory leaks
-    class ArticleListViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ArticleListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val articleName: TextView = itemView.findViewById(R.id.descTextxArticleListFrag)
         val articleImage: ImageView = itemView.findViewById(R.id.imageArticleListFrag)
         val articleCard: CardView = itemView.findViewById(R.id.articleListCardArtListFrag)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleListViewholder {
-        // Inflate the layout using the parent's context
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleListViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.article_list_single, parent, false)
-        return ArticleListViewholder(view)
+        return ArticleListViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return articleListData.size
     }
 
-    override fun onBindViewHolder(holder: ArticleListViewholder, position: Int) {
+    override fun onBindViewHolder(holder: ArticleListViewHolder, position: Int) {
         val singleArticle = articleListData[position]
 
-        // Safely access Firestore data with a null-check
-        val articleData = singleArticle.data
-        if (articleData != null) {
-            val title = articleData["title"] as? String ?: "No Title"
-            holder.articleName.text = title
+        holder.articleName.text = singleArticle.title
 
-            holder.articleCard.setOnClickListener {
-                cellClickListener.onCellClickListener(title)
-            }
+        holder.articleCard.setOnClickListener {
+            cellClickListener.onCellClickListener(singleArticle.title)
+        }
 
-            // Safely cast the images list
-            val images = articleData["images"] as? List<*>
-            if (!images.isNullOrEmpty()) {
-                val firstImage = images[0] as? String
-                if (firstImage != null) {
-                    Glide.with(holder.itemView.context)
-                        .load(firstImage)
-                        .into(holder.articleImage)
-                }
-            }
+        if (singleArticle.images.isNotEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(singleArticle.images[0])
+                .into(holder.articleImage)
         }
     }
 }

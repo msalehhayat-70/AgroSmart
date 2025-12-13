@@ -1,8 +1,8 @@
-package com.project.farmingapp.adapter
+package com.example.agrosmart.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,124 +10,89 @@ import android.view.animation.AnimationUtils
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.project.farmingapp.R
-import kotlinx.android.synthetic.main.post_with_image_sm.view.*
+import com.example.agrosmart.R
+import com.example.agrosmart.model.SMPost
+import com.example.agrosmart.viewmodel.SocialMediaViewModel
 
+class SMPostListAdapter(
+    private val context: Context,
+    private val lifecycleOwner: LifecycleOwner,
+    private val postListData: List<SMPost>,
+    private val viewModel: SocialMediaViewModel
+) : RecyclerView.Adapter<SMPostListAdapter.SMPostListViewModel>() {
 
-class SMPostListAdapter(val context: Context, val postListData : List<DocumentSnapshot>): RecyclerView.Adapter<SMPostListAdapter.SMPostListViewModel>() {
-
-    lateinit var firebaseAuth: FirebaseAuth
-    lateinit var firebaseFirestore: FirebaseFirestore
-    class SMPostListViewModel(itemView: View): RecyclerView.ViewHolder(itemView){
-
+    class SMPostListViewModel(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val userNamePostSM: TextView = itemView.findViewById(R.id.userNamePostSM)
+        val userPostTitleValue: TextView = itemView.findViewById(R.id.userPostTitleValue)
+        val userPostDescValue: TextView = itemView.findViewById(R.id.userPostDescValue)
+        val userPostUploadTime: TextView = itemView.findViewById(R.id.userPostUploadTime)
+        val postImageSM: ImageView = itemView.findViewById(R.id.postImageSM)
+        val postVideoSM: WebView = itemView.findViewById(R.id.postVideoSM)
+        val userProfileImageCard: CardView = itemView.findViewById(R.id.userProfileImageCard)
+        val postContainer: ConstraintLayout = itemView.findViewById(R.id.post_container)
+        val userProfileImagePost: ImageView = itemView.findViewById(R.id.userProfileImagePost)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SMPostListViewModel {
         val view = LayoutInflater.from(context).inflate(R.layout.post_with_image_sm, parent, false)
-        return SMPostListAdapter.SMPostListViewModel(view)
+        return SMPostListViewModel(view)
     }
 
     override fun getItemCount(): Int {
         return postListData.size
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onBindViewHolder(holder: SMPostListViewModel, position: Int) {
         val currentPost = postListData[position]
 
+        holder.userNamePostSM.text = currentPost.name
+        holder.userPostTitleValue.text = currentPost.title
+        holder.userPostDescValue.text = currentPost.description
+        holder.userPostUploadTime.text = DateUtils.getRelativeTimeSpanString(currentPost.timeStamp)
 
+        when (currentPost.uploadType) {
+            "video" -> {
+                val webSet: WebSettings = holder.postVideoSM.settings
+                webSet.javaScriptEnabled = true
+                webSet.loadWithOverviewMode = true
+                webSet.useWideViewPort = true
 
-        holder.itemView.userNamePostSM.text = currentPost.get("name").toString()
-        holder.itemView.userPostTitleValue.text = currentPost.get("title").toString()
-        holder.itemView.userPostDescValue.text = currentPost.get("description").toString()
-        holder.itemView.userPostUploadTime.text = DateUtils.getRelativeTimeSpanString(currentPost.get("timeStamp") as Long)
+                holder.postVideoSM.webViewClient = object : WebViewClient() {}
 
-        val imageUrl = currentPost.get("imageUrl")
-        Log.d("Post without Image1", imageUrl.toString())
-
-
-        val uploadType = currentPost.get("uploadType").toString()
-        if (uploadType == "video"){
-
-//            val mediaController: MediaController = MediaController(context.applicationContext)
-////            val uri: Uri = Uri.parse()
-//            mediaController.setAnchorView(holder.itemView.postVideoSM)
-//
-//            holder.itemView.postVideoSM.setZOrderMediaOverlay(true)
-//            holder.itemView.postVideoSM.setMediaController(mediaController)
-//
-//            Log.d("Upload Type 1 ", uploadType)
-//            holder.itemView.postVideoSM.setVideoPath(currentPost.getString("imageUrl"))
-////            videoView1.requestFocus()
-//            holder.itemView.postVideoSM.setOnPreparedListener {
-//
-//            }
-//            holder.itemView.postVideoSM.start()
-//
-//            holder.itemView.postImageSM.visibility = View.GONE
-//            holder.itemView.postVideoSM.visibility = View.VISIBLE
-
-
-            // Web View
-
-            val webSet: WebSettings = holder.itemView.postVideoSM.settings
-            webSet.javaScriptEnabled = true
-            webSet.loadWithOverviewMode = true
-            webSet.useWideViewPort = true
-
-
-            holder.itemView.postVideoSM.setWebViewClient(object : WebViewClient() {
-                // autoplay when finished loading via javascript injection
-                override fun onPageFinished(view: WebView, url: String) {
-//                    holder.itemView.postVideoSM.loadUrl("javascript:(function() { document.getElementsByTagName('video')[0].play(); })()")
-                }
-            })
-
-
-            holder.itemView.postVideoSM.loadUrl(currentPost.get("imageUrl").toString())
-//            holder.itemView.postVideoSM.stopLoading()
-            holder.itemView.postImageSM.visibility = View.GONE
-            holder.itemView.postVideoSM.visibility = View.VISIBLE
-
-
-        } else if (uploadType == "image"){
-            Glide.with(context).load(currentPost.get("imageUrl")).into(holder.itemView.postImageSM)
-            holder.itemView.postVideoSM.visibility = View.GONE
-
-            holder.itemView.postImageSM.visibility = View.VISIBLE
-            Log.d("Upload Type 2 ", uploadType)
-        }else if (uploadType.isEmpty() ){
-            Log.d("Post without Image2", imageUrl.toString())
-            holder.itemView.postImageSM.visibility = View.GONE
-            holder.itemView.postVideoSM.visibility = View.GONE
-            Log.d("Upload Type 3 ", uploadType)
-        }
-
-        firebaseAuth = FirebaseAuth.getInstance()
-
-        holder.itemView.userProfileImageCard.animation = AnimationUtils.loadAnimation(context, R.anim.fade_transition)
-        holder.itemView.post_container.animation = AnimationUtils.loadAnimation(context, R.anim.fade_transition)
-
-
-        holder.itemView.post_container.animation = AnimationUtils.loadAnimation(context, R.anim.fade_transition)
-//        Glide.with(context).load(firebaseAuth.currentUser!!.photoUrl.toString()).into(holder.itemView.userProfileImagePost)
-        holder.itemView.userPostDescValue.setOnClickListener {
-            holder.itemView.userPostDescValue.maxLines = Int.MAX_VALUE
-        }
-
-
-
-        firebaseFirestore = FirebaseFirestore.getInstance()
-        firebaseFirestore.collection("users").document("${currentPost.get("userID")}").get()
-            .addOnSuccessListener {
-                val profileImage = it.get("profileImage").toString()
-                if (!profileImage.isNullOrEmpty()){
-                    Glide.with(context).load(it.get("profileImage").toString()).into(holder.itemView.userProfileImagePost)
-                }
+                holder.postVideoSM.loadUrl(currentPost.imageUrl ?: "")
+                holder.postImageSM.visibility = View.GONE
+                holder.postVideoSM.visibility = View.VISIBLE
             }
+            "image" -> {
+                Glide.with(context).load(currentPost.imageUrl).into(holder.postImageSM)
+                holder.postVideoSM.visibility = View.GONE
+                holder.postImageSM.visibility = View.VISIBLE
+            }
+            else -> {
+                holder.postImageSM.visibility = View.GONE
+                holder.postVideoSM.visibility = View.GONE
+            }
+        }
+
+        holder.userProfileImageCard.animation = AnimationUtils.loadAnimation(context, R.anim.fade_transition)
+        holder.postContainer.animation = AnimationUtils.loadAnimation(context, R.anim.fade_transition)
+
+        holder.userPostDescValue.setOnClickListener {
+            holder.userPostDescValue.maxLines = Int.MAX_VALUE
+        }
+
+        viewModel.getUserProfileImage(currentPost.userID).observe(lifecycleOwner) {
+            if (!it.isNullOrEmpty()) {
+                Glide.with(context).load(it).into(holder.userProfileImagePost)
+            }
+        }
     }
 }
