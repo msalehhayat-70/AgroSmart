@@ -1,38 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/miItem1"
-        android:title="E-Commerce"
-        tools:ignore="HardcodedText" />
+        android:title="Shop" />
     <item
         android:id="@+id/miItem2"
-        android:title="APMC Updates"
-        tools:ignore="HardcodedText" />
+        android:title="Market" />
     <item
         android:id="@+id/miItem3"
-        android:title="Create Post"
-        tools:ignore="HardcodedText" />
+        android:title="Create Post" />
     <item
         android:id="@+id/miItem4"
-        android:title="Community Network"
-        tools:ignore="HardcodedText" />
+        android:title="Social" />
     <item
         android:id="@+id/miItem5"
-        android:title="Weather Forecast"
-        tools:ignore="HardcodedText" />
+        android:title="Weather" />
     <item
         android:id="@+id/miItem6"
-        android:title="Fruits Articles"
-        tools:ignore="HardcodedText" />
+        android:title="Articles" />
     <item
         android:id="@+id/miItem7"
-        android:title="My Orders"
-        tools:ignore="HardcodedText" />
+        android:title="My Orders" />
     <item
         android:id="@+id/miItem8"
-        android:title="Log Out"
-        tools:ignore="HardcodedText" />
-
-
+        android:title="Log Out" />
 </menu>

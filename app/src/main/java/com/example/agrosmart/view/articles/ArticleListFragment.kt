@@ -1,116 +1,74 @@
-package com.project.farmingapp.view.articles
+package com.example.agrosmart.view.articles
 
-import android.R.attr.fragment
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.project.farmingapp.R
-import com.project.farmingapp.adapter.ArticleListAdapter
-import com.project.farmingapp.utilities.CellClickListener
-import com.project.farmingapp.viewmodel.ArticleViewModel
-import kotlinx.android.synthetic.main.fragment_article_list.*
+import com.example.agrosmart.R
+import com.example.agrosmart.adapter.ArticleListAdapter
+import com.example.agrosmart.databinding.FragmentArticleListBinding
+import com.example.agrosmart.model.Article
+import com.example.agrosmart.utilities.CellClickListener
+import com.example.agrosmart.viewmodel.ArticleViewModel
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ArticleListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ArticleListFragment : Fragment(), CellClickListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private lateinit var viewModel: ArticleViewModel
-    lateinit var Adapter: ArticleListAdapter
-    lateinit var fruitFragment: FruitsFragment
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        viewModel = ViewModelProviders.of(requireActivity())
-            .get<ArticleViewModel>(ArticleViewModel::class.java)
+    private var _binding: FragmentArticleListBinding? = null
+    private val binding get() = _binding!!
 
-        viewModel.getAllArticles("article_fruits")
-    }
+    private val viewModel: ArticleViewModel by viewModels()
+    private lateinit var articleAdapter: ArticleListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        viewModel.message3.observe(viewLifecycleOwner, Observer {
-
-            Log.d("Art All Data", it[0].data.toString())
-
-
-            Adapter = ArticleListAdapter(activity!!.applicationContext, it, this)
-            recyclerArticleListFrag.adapter = Adapter
-            recyclerArticleListFrag.layoutManager = GridLayoutManager(activity!!.applicationContext, 2)
-
-        })
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_article_list, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ArticleListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ArticleListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    ): View {
+        _binding = FragmentArticleListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setHasOptionsMenu(true)
-        (activity as AppCompatActivity).supportActionBar?.title = "Articles"
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Articles"
 
+        setupRecyclerView()
+        setupObservers()
+
+        viewModel.getAllArticles()
     }
 
+    private fun setupObservers() {
+        viewModel.articles.observe(viewLifecycleOwner) { articles ->
+            if (articles != null) {
+                articleAdapter = ArticleListAdapter(articles, this)
+                binding.recyclerArticleListFrag.adapter = articleAdapter
+            }
+        }
+    }
 
+    private fun setupRecyclerView() {
+        binding.recyclerArticleListFrag.layoutManager = GridLayoutManager(requireContext(), 2)
+    }
 
-    override fun onCellClickListener(name: String) {
-        fruitFragment = FruitsFragment()
+    override fun onCellClickListener(data: String) {
+        val fruitsFragment = FruitsFragment()
         val bundle = Bundle()
-        bundle.putString("name", name)
-        fruitFragment.setArguments(bundle)
-        val transaction = activity!!.supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.frame_layout, fruitFragment, name)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .setReorderingAllowed(true)
-            .addToBackStack("name")
+        bundle.putString("name", data)
+        fruitsFragment.arguments = bundle
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment_content_main, fruitsFragment, data)
+            .addToBackStack(null)
             .commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

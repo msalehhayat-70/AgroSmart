@@ -1,115 +1,44 @@
-package com.project.farmingapp.model
+package com.example.agrosmart.model
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
 import java.io.Serializable
 
 class AuthRepository {
 
-    lateinit var googleSignInClient: GoogleSignInClient
-    val firebaseAuth = FirebaseAuth.getInstance()
-    lateinit var firebaseDb: FirebaseFirestore
-    val data = MutableLiveData<String>()
+    // This is placeholder data. In a real app, this would be handled by your own auth system.
+    private val authResult = MutableLiveData<String>()
+
+    @Suppress("UNUSED_PARAMETER")
     fun signInWithEmail(
         email: String,
         password: String,
         otherData: HashMap<String, Serializable?>
     ): LiveData<String> {
-
-        firebaseDb = FirebaseFirestore.getInstance()
-
-        val data2 = MutableLiveData<String>()
-        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-            if (it.isSuccessful) {
-                firebaseDb!!.collection("users").document("${email}")
-                    .set(otherData)
-                    .addOnSuccessListener {
-                        data.value = "Success"
-                    }
-                    .addOnFailureListener { Exception ->
-                        {
-                            data.value = "Failure"
-                        }
-                    }
-
-            } else if (it.isCanceled) {
-                data.value = "Failure"
-            }
-        }.addOnFailureListener {
-            Log.d("AuthRepo", it.message)
-            data.value = it.message
-        }
-        return data
+        // Simulate a successful sign-up without Firebase
+        authResult.value = "Success"
+        return authResult
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun signInToGoogle(
         idToken: String,
         email: String,
         otherData: HashMap<String, Serializable?>
     ): LiveData<String> {
-        firebaseDb = FirebaseFirestore.getInstance()
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        firebaseAuth!!.signInWithCredential(credential)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val userDocRef = firebaseDb!!.collection("users").document("${email}")
-
-                    userDocRef.get().addOnSuccessListener {
-                        data.value = "Success"
-                        if(it.exists()){
-                            Log.d("User", "User Exists")
-                        } else{
-                            Log.d("User", "User Does not Exists")
-                            firebaseDb!!.collection("users").document("${email}")
-                                .set(otherData)
-                                .addOnSuccessListener {
-                                    data.value = "Success"
-                                }
-                                .addOnFailureListener { Exception ->
-                                    {
-                                        data.value = "Failure"
-                                    }
-                                }
-                        }
-                    }
-
-                    val user = firebaseAuth!!.currentUser
-                } else {
-                    data.value = "Failure"
-                }
-            }
-
-        return data
+        // Simulate a successful Google sign-in without Firebase
+        authResult.value = "Success"
+        return authResult
     }
 
-
-    //login
+    @Suppress("UNUSED_PARAMETER")
     fun logInWithEmail(
         email: String,
         password: String
     ): LiveData<String> {
-
-        firebaseDb = FirebaseFirestore.getInstance()
-
-        val data = MutableLiveData<String>()
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-            if (it.isSuccessful) {
-                data.value = "Success"
-
-            } else if (it.isCanceled) {
-                data.value = "Failure"
-            }
-
-        }.addOnFailureListener {
-            Log.d("AuthRepo", it.message)
-            data.value = it.message
-        }
-        return data
+        // Simulate a successful login without Firebase
+        val loginResult = MutableLiveData<String>()
+        loginResult.value = "Success"
+        return loginResult
     }
 }

@@ -1,41 +1,33 @@
-package com.project.farmingapp.model
+package com.example.agrosmart.model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.project.farmingapp.viewmodel.ArticleViewModel
-import com.project.farmingapp.viewmodel.WeatherViewModel
 
 class ArticleRepository {
-    lateinit var firebaseDb: FirebaseFirestore
-    var data = MutableLiveData<HashMap<String, Any>>()
-    val data2 = MutableLiveData<String>()
-    private lateinit var viewModel: ArticleViewModel
-    fun getSpecificFruitArticle(name: String): LiveData<String> {
 
-        firebaseDb = FirebaseFirestore.getInstance()
-        Log.d("ArticleRepo1", "Ss")
-        firebaseDb.collection("article_fruits").document("${name}")
-            .get()
-            .addOnSuccessListener {
-//                var ss = it.data
-                viewModel = ArticleViewModel()
+    private val _articles = MutableLiveData<List<Article>>()
+    val articles: LiveData<List<Article>> = _articles
 
+    private val _article = MutableLiveData<Article?>()
+    val article: LiveData<Article?> = _article
 
-//                data.value = it.data as HashMap<String, Any>?
-                viewModel.updateArticle(it.data as HashMap<String, Any>)
+    fun getAllArticles() {
+        // This is placeholder data since Firebase is removed.
+        // In a real app, this would come from a local database or a different backend.
+        val placeholderArticles = listOf(
+            Article(title = "The Ultimate Guide to Tomato Farming", images = listOf("")),
+            Article(title = "Advanced Techniques for Wheat Cultivation", images = listOf("")),
+            Article(title = "Organic Pesticides for a Healthy Garden", images = listOf(""))
+        )
+        _articles.postValue(placeholderArticles)
+    }
 
-
-//                data.value = it.data as HashMap<String, Any>?
-                data2.value = "Success"
-                Log.d("ArticleRepo2", data2.value.toString())
-
-            }
-            .addOnFailureListener {
-                Log.d("ArticleRepo3", "ss")
-            }
-        return data2
+    fun getSpecificFruitArticle(name: String) {
+        // This is placeholder data since Firebase is removed.
+        val placeholderArticle = Article(
+            title = name,
+            images = listOf("https://via.placeholder.com/400x200.png?text=$name")
+        )
+        _article.postValue(placeholderArticle)
     }
 }

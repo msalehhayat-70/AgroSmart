@@ -1,6 +1,6 @@
 package com.example.agrosmart.model
 
-data class APMCCustomRecords(
+data class PamraCustomRecords(
     val market: String,
     val district: String,
     val state: String,

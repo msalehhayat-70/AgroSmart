@@ -1,92 +1,59 @@
-package com.project.farmingapp.view.auth
+package com.example.agrosmart.view.auth
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.project.farmingapp.R
-import com.project.farmingapp.databinding.ActivitySignupBinding
-import com.project.farmingapp.utilities.hide
-import com.project.farmingapp.utilities.show
-import com.project.farmingapp.utilities.toast
-import com.project.farmingapp.view.dashboard.DashboardActivity
-import com.project.farmingapp.viewmodel.AuthListener
-import com.project.farmingapp.viewmodel.AuthViewModel
-import kotlinx.android.synthetic.main.activity_signup.*
+import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.example.agrosmart.databinding.ActivitySignupBinding
+import com.example.agrosmart.view.dashboard.DashboardActivity
+import com.example.agrosmart.viewmodel.AuthViewModel
 
-class SignupActivity : AppCompatActivity(), AuthListener {
+class SignupActivity : AppCompatActivity() {
 
-    lateinit var googleSignInClient: GoogleSignInClient
-    val firebaseAuth = FirebaseAuth.getInstance()
-    lateinit var viewModel: AuthViewModel
+    private lateinit var binding: ActivitySignupBinding
+    private val viewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivitySignupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val binding: ActivitySignupBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_signup)
-        viewModel = ViewModelProviders.of(this).get(AuthViewModel::class.java)
-        binding.authViewModel = viewModel
-        viewModel.authListener = this
+        setupClickListeners()
+        setupObservers()
+    }
 
-        loginRedirectTextSignup.setOnClickListener {
-            Intent(this, LoginActivity::class.java).also {
-                startActivity(it)
-            }
+    private fun setupClickListeners() {
+        binding.loginRedirectText.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        signGoogleBtnSignup.setOnClickListener {
-            signIn()
+        binding.signupButton.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+            viewModel.name = binding.nameEditText.text.toString()
+            viewModel.mobNo = binding.mobNoEditText.text.toString()
+            viewModel.email = binding.emailEditText.text.toString()
+            viewModel.city = binding.cityEditText.text.toString()
+            viewModel.password = binding.passwordEditText.text.toString()
+            viewModel.signup()
+        }
+
+        binding.googleSignupButton.setOnClickListener {
+            Toast.makeText(this, "Google Sign-In is currently disabled.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        viewModel.returnActivityResult(requestCode, resultCode, data)
-    }
-
-    fun signIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    companion object {
-        private const val TAG = "GoogleActivity"
-        private const val RC_SIGN_IN = 9001
-    }
-
-    override fun onStarted() {
-        progressSignup.show()
-    }
-
-    override fun onSuccess(authRepo: LiveData<String>) {
-        authRepo.observe(this, Observer {
-            progressSignup.hide()
-            if (it.toString() == "Success") {
-                toast("Account Created")
-                Intent(this, DashboardActivity::class.java).also {
-                    startActivity(it)
-                }
+    private fun setupObservers() {
+        viewModel.signup().observe(this) { result ->
+            binding.progressBar.visibility = View.GONE
+            if (result == "Success") {
+                Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, "Signup Failed: $result", Toast.LENGTH_SHORT).show()
             }
-        })
-    }
-
-    override fun onFailure(message: String) {
-        progressSignup.hide()
-        toast("Failure")
+        }
     }
 }

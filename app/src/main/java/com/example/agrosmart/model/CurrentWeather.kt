@@ -1,14 +1,19 @@
 package com.example.agrosmart.model
 
+import com.google.gson.annotations.SerializedName
+
 data class CurrentWeather(
     val main: Main,
     val weather: List<Weather>,
-    val dt_txt: String
+    @SerializedName("dt_txt")
+    val dtTxt: String
 ) {
     data class Main(
         val temp: Double,
-        val temp_min: String,
-        val temp_max: String,
+        @SerializedName("temp_min")
+        val tempMin: String,
+        @SerializedName("temp_max")
+        val tempMax: String,
         val humidity: Int
     )
 
