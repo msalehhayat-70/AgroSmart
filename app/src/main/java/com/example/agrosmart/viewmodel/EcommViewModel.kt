@@ -1,39 +1,55 @@
 package com.example.agrosmart.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.agrosmart.model.CartItem
+import com.example.agrosmart.model.EcommRepository
+import com.example.agrosmart.model.Product
 
 class EcommViewModel : ViewModel() {
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val database = FirebaseDatabase.getInstance()
-    private val auth = FirebaseAuth.getInstance()
+    private val repository = EcommRepository()
 
-    fun getSpecificItem(itemId: String): LiveData<DocumentSnapshot> {
-        val item = MutableLiveData<DocumentSnapshot>()
-        firestore.collection("products").document(itemId).get()
-            .addOnSuccessListener {
-                item.value = it
+    val products: LiveData<List<Product>> = repository.products
+    val product: LiveData<Product?> = repository.product
+    private val cartItems: LiveData<List<CartItem>> = repository.cartItems
+
+    val cartItemsWithProducts = MediatorLiveData<List<Pair<CartItem, Product>>>()
+
+    init {
+        cartItemsWithProducts.addSource(cartItems) { items ->
+            products.value?.let { prods ->
+                processCartItems(items, prods)
             }
-        return item
-    }
-
-    fun removeCartItem(itemId: String) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            database.getReference(userId).child("cart").child(itemId).removeValue()
+        }
+        cartItemsWithProducts.addSource(products) { prods ->
+            cartItems.value?.let { items ->
+                processCartItems(items, prods)
+            }
         }
     }
 
-    fun updateCartItemQuantity(itemId: String, quantity: Int) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            database.getReference(userId).child("cart").child(itemId).child("quantity").setValue(quantity)
+    fun loadAllEcommItems() {
+        repository.getAllProducts()
+    }
+
+    fun getProductById(id: String) {
+        repository.getProductById(id)
+    }
+
+    fun getCartItems() {
+        repository.getCartItems()
+        repository.getAllProducts()
+    }
+
+    private fun processCartItems(cartItems: List<CartItem>, products: List<Product>) {
+        val productsById = products.associateBy { it.id }
+        val detailedCartItems = cartItems.mapNotNull { cartItem ->
+            productsById[cartItem.key]?.let { product ->
+                Pair(cartItem, product)
+            }
         }
+        cartItemsWithProducts.postValue(detailedCartItems)
     }
 }
