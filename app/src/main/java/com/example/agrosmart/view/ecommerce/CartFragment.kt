@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.agrosmart.R
 import com.example.agrosmart.adapter.CartItemsAdapter
 import com.example.agrosmart.databinding.FragmentCartBinding
 import com.example.agrosmart.model.CartItem
@@ -40,7 +41,7 @@ class CartFragment : Fragment(), CartItemBuy {
         setupRecyclerView()
         setupObservers()
 
-        viewModel.getCartItems() // Ask the ViewModel to fetch the data
+        viewModel.getCartItems()
     }
 
     private fun setupObservers() {
@@ -79,27 +80,25 @@ class CartFragment : Fragment(), CartItemBuy {
         _binding = null
     }
 
-    // Implementation for CartItemBuy interface
     override fun addToOrders(productId: String, quantity: Int, itemCost: Int, deliveryCost: Int) {
-        // The original logic was to navigate to RazorPayActivity. This is preserved.
-        Intent(requireActivity(), RazorPayActivity::class.java).also {
-            it.putExtra("productId", productId)
-            it.putExtra("itemCost", itemCost.toString())
-            it.putExtra("quantity", quantity.toString())
-            it.putExtra("deliveryCost", deliveryCost.toString())
-            startActivity(it)
+        val intent = Intent(requireActivity(), RazorPayActivity::class.java).apply {
+            putExtra("productId", productId)
+            putExtra("itemCost", itemCost.toString())
+            putExtra("quantity", quantity.toString())
+            putExtra("deliveryCost", deliveryCost.toString())
         }
+        startActivity(intent)
     }
 
     override fun removeItem(productId: String) {
-        // Placeholder for removing item logic
+        // Placeholder logic
         Toast.makeText(requireContext(), "$productId removed", Toast.LENGTH_SHORT).show()
-        viewModel.getCartItems() // Re-fetch to update UI
+        viewModel.getCartItems()
     }
 
     override fun updateQuantity(productId: String, newQuantity: Int) {
-        // Placeholder for updating quantity logic
+        // Placeholder logic
         Toast.makeText(requireContext(), "Quantity for $productId updated to $newQuantity", Toast.LENGTH_SHORT).show()
-        viewModel.getCartItems() // Re-fetch to update UI
+        viewModel.getCartItems()
     }
 }

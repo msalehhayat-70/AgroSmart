@@ -7,5 +7,6 @@ data class Product(
     val delCharge: Int,
     val retailer: String,
     val availability: String,
-    val imageUrl: List<String>
+    val imageUrl: List<String>,
+    val rating: Float
 )

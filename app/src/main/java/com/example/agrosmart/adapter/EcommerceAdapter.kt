@@ -1,6 +1,5 @@
 package com.example.agrosmart.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,48 +10,49 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.agrosmart.R
-import com.example.agrosmart.model.EcommItem
+import com.example.agrosmart.model.Product
 import com.example.agrosmart.utilities.CellClickListener
 
 class EcommerceAdapter(
     private val context: Context,
-    private val ecommtListData: List<EcommItem>,
+    private val productList: List<Product>,
     private val cellClickListener: CellClickListener
-) : RecyclerView.Adapter<EcommerceAdapter.EcommercceViewModel>() {
+) : RecyclerView.Adapter<EcommerceAdapter.EcommerceViewHolder>() {
 
-    class EcommercceViewModel(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val ecommtitle: TextView = itemView.findViewById(R.id.ecommtitle)
+    class EcommerceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val ecommTitle: TextView = itemView.findViewById(R.id.ecommtitle)
         val ecommPrice: TextView = itemView.findViewById(R.id.ecommPrice)
-        val ecommretailer: TextView = itemView.findViewById(R.id.ecommretailer)
+        val ecommRetailer: TextView = itemView.findViewById(R.id.ecommretailer)
         val ecommItemAvailability: TextView = itemView.findViewById(R.id.ecommItemAvailability)
         val ecommImage: ImageView = itemView.findViewById(R.id.ecommImage)
         val ecommRating: RatingBar = itemView.findViewById(R.id.ecommRating)
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): EcommercceViewModel {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EcommerceViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.single_ecomm_item, parent, false)
-        return EcommercceViewModel(view)
+        return EcommerceViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return ecommtListData.size
+        return productList.size
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: EcommercceViewModel, position: Int) {
-        val currentList = ecommtListData[position]
-        holder.ecommtitle.text = currentList.title
-        holder.ecommPrice.text = "\u20B9 ${currentList.price}"
-        holder.ecommretailer.text = currentList.retailer
-        holder.ecommItemAvailability.text = currentList.availability
-        Glide.with(context).load(currentList.imageUrl[0]).into(holder.ecommImage)
-        holder.ecommRating.rating = currentList.rating
+    override fun onBindViewHolder(holder: EcommerceViewHolder, position: Int) {
+        val currentProduct = productList[position]
+
+        holder.ecommTitle.text = currentProduct.title
+        holder.ecommPrice.text = "\u20B9${currentProduct.price}"
+        holder.ecommRetailer.text = currentProduct.retailer
+        holder.ecommItemAvailability.text = currentProduct.availability
+
+        if (currentProduct.imageUrl.isNotEmpty()) {
+            Glide.with(context).load(currentProduct.imageUrl[0]).into(holder.ecommImage)
+        }
+
+        holder.ecommRating.rating = currentProduct.rating
 
         holder.itemView.setOnClickListener {
-            cellClickListener.onCellClickListener(currentList.id)
+            cellClickListener.onCellClickListener(currentProduct.id)
         }
     }
 }
