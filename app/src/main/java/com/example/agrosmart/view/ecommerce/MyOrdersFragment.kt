@@ -46,8 +46,6 @@ class MyOrdersFragment : Fragment(), CellClickListener, CartItemBuy {
             if (!orders.isNullOrEmpty()) {
                 myOrdersAdapter = MyOrdersAdapter(orders, this, this)
                 binding.recyclerMyOrders.adapter = myOrdersAdapter
-            } else {
-                // Handle empty order list if needed
             }
         }
     }
@@ -73,7 +71,6 @@ class MyOrdersFragment : Fragment(), CellClickListener, CartItemBuy {
         _binding = null
     }
 
-    // These functions are part of the CartItemBuy interface but are not used here.
     override fun addToOrders(productId: String, quantity: Int, itemCost: Int, deliveryCost: Int) {}
     override fun removeItem(productId: String) {}
     override fun updateQuantity(productId: String, newQuantity: Int) {}

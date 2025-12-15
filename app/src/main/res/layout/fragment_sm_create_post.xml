@@ -14,6 +14,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:hint="Post Title"
+        android:inputType="textCapSentences"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +26,8 @@
         android:layout_marginTop="8dp"
         android:gravity="top"
         android:hint="Description"
-        android:lines="5"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minLines="5"
         app:layout_constraintEnd_toEndOf="@+id/postTitleSM"
         app:layout_constraintStart_toStartOf="@+id/postTitleSM"
         app:layout_constraintTop_toBottomOf="@+id/postTitleSM" />
@@ -35,6 +37,10 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_gallery"
         app:layout_constraintStart_toStartOf="@+id/descPostSM"
         app:layout_constraintTop_toBottomOf="@+id/descPostSM" />
