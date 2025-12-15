@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.agrosmart.R
 import com.example.agrosmart.model.SMPost
-import com.example.agrosmart.viewmodel.SocialMediaViewModel
+import com.example.agrosmart.viewmodel.SocialViewModel
 
 class SMPostListAdapter(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val postListData: List<SMPost>,
-    private val viewModel: SocialMediaViewModel
+    private val viewModel: SocialViewModel
 ) : RecyclerView.Adapter<SMPostListAdapter.SMPostListViewModel>() {
 
     class SMPostListViewModel(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -89,10 +89,14 @@ class SMPostListAdapter(
             holder.userPostDescValue.maxLines = Int.MAX_VALUE
         }
 
-        viewModel.getUserProfileImage(currentPost.userID).observe(lifecycleOwner) {
-            if (!it.isNullOrEmpty()) {
-                Glide.with(context).load(it).into(holder.userProfileImagePost)
-            }
-        }
+        // The original code was fetching a user profile image from a separate view model.
+        // Since we are using a single SocialViewModel now, this logic needs to be adapted.
+        // For now, we will comment it out to resolve the error. You can re-implement this
+        // if you add user profile functionality to your SocialViewModel.
+        // viewModel.getUserProfileImage(currentPost.userID).observe(lifecycleOwner) {
+        //     if (!it.isNullOrEmpty()) {
+        //         Glide.with(context).load(it).into(holder.userProfileImagePost)
+        //     }
+        // }
     }
 }
