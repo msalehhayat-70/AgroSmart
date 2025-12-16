@@ -10,4 +10,5 @@
     <string name="please_select_state">Please Select State</string>
     <string name="please_select_district">Please Select District</string>
     <string name="no_records_found">No records found!</string>
+    <string name="unknown_city">Unknown City</string>
 </resources>
