@@ -1,4 +1,5 @@
 package com.example.agrosmart.view.user
+
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -14,18 +15,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.semantics.setText
-import androidx.compose.ui.semantics.text
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.glance.visibility
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.agrosmart.adapter.PostListUserProfileAdapter
 import com.example.agrosmart.databinding.FragmentUserBinding
 import com.example.agrosmart.model.UserProfilePost
@@ -34,8 +30,6 @@ import com.example.agrosmart.viewmodel.UserDataViewModel
 import com.example.agrosmart.viewmodel.UserProfilePostsViewModel
 import com.google.firebase.Timestamp
 import java.io.IOException
-
-private val glance: Any
 
 class UserFragment : Fragment(), CellClickListener {
 
@@ -73,8 +67,13 @@ class UserFragment : Fragment(), CellClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(UserProfilePostsViewModel::class.java)
-        userDataViewModel = ViewModelProvider(requireActivity()).get(UserDataViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[UserProfilePostsViewModel::class.java]
+        userDataViewModel = ViewModelProvider(requireActivity())[UserDataViewModel::class.java]
+
+        // TODO: Replace with actual user ID from your authentication system
+        val userId = "user@example.com"
+        userDataViewModel.getUserData(userId)
+        viewModel.getAllPosts(userId)
     }
 
     override fun onCreateView(
@@ -96,14 +95,8 @@ class UserFragment : Fragment(), CellClickListener {
 
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // No menu to inflate, but you could add items here programmatically
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle menu item selection
-                return true
-            }
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean = true
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
@@ -112,34 +105,14 @@ class UserFragment : Fragment(), CellClickListener {
         binding.uploadProgressBarProfile.visibility = View.GONE
         binding.uploadBackProgressProfile.visibility = View.GONE
 
-        // TODO: Observe user data from your new database and update the UI.
-        // For now, setting some dummy data.
-        binding.userNameUserProfileFrag.text = "User Name"
-        binding.userCityUserProfileFrag.text = "City: Unknown"
-        binding.userPostsCountUserProfileFrag.text = "Posts: 0"
-        binding.userEmailUserProfileFrag.text = "user@example.com"
-        binding.aboutValueUserProfileFrag.text = "About me..."
-
-        binding.uploadUserBackgroundImage.setOnClickListener {
-            selectImage(1)
-        }
-
-        binding.uploadProfilePictureImage.setOnClickListener {
-            selectImage(0)
-        }
-
-        binding.imageEdit.setOnClickListener {
-            toggleEditMode(true)
-        }
-
-        binding.imageChecked.setOnClickListener {
-            toggleEditMode(false)
-            // TODO: Update user data in new database
-        }
+        binding.uploadUserBackgroundImage.setOnClickListener { selectImage(1) }
+        binding.uploadProfilePictureImage.setOnClickListener { selectImage(0) }
+        binding.imageEdit.setOnClickListener { toggleEditMode(true) }
+        binding.imageChecked.setOnClickListener { toggleEditMode(false) }
     }
 
     private fun setupObservers() {
-        viewModel.liveData3.observe(viewLifecycleOwner) { snapshots ->
+        viewModel.postsLiveData.observe(viewLifecycleOwner) { snapshots ->
             if (snapshots != null) {
                 val posts = snapshots.map { doc ->
                     UserProfilePost(
@@ -155,9 +128,29 @@ class UserFragment : Fragment(), CellClickListener {
             }
         }
 
-        // userDataViewModel.userliveData.observe(viewLifecycleOwner) {
-        // Update UI with user data from new database
-        // }
+        userDataViewModel.userliveData.observe(viewLifecycleOwner) { doc ->
+            if (doc != null && doc.exists()) {
+                binding.userNameUserProfileFrag.text = doc.getString("name") ?: "User Name"
+                binding.userCityUserProfileFrag.text = "City: ${doc.getString("city") ?: "Unknown"}"
+                val posts = doc.get("posts") as? List<*>
+                binding.userPostsCountUserProfileFrag.text = "Posts: ${posts?.size ?: 0}"
+                binding.userEmailUserProfileFrag.text = doc.getString("email") ?: "user@example.com"
+                binding.aboutValueUserProfileFrag.text = doc.getString("about") ?: "About me..."
+
+                val profileImageUrl = doc.getString("profileImage")
+                if (!profileImageUrl.isNullOrEmpty()) {
+                    Glide.with(requireContext()).load(profileImageUrl).into(binding.userImageUserFrag)
+                }
+
+                val backgroundImageUrl = doc.getString("backImage")
+                if (!backgroundImageUrl.isNullOrEmpty()) {
+                    Glide.with(requireContext()).load(backgroundImageUrl).into(binding.userBackgroundImage)
+                }
+            } else {
+                // Handle case where user data is not found or failed to load
+                binding.userNameUserProfileFrag.text = "User not found"
+            }
+        }
     }
 
     private fun selectImage(uploadType: Int) {
@@ -175,17 +168,20 @@ class UserFragment : Fragment(), CellClickListener {
         binding.imageChecked.visibility = visibility
         binding.imageEdit.visibility = if (enable) View.GONE else View.VISIBLE
         binding.cityEditUserProfile.visibility = visibility
-
-        binding.aboutValueUserProfileFrag.visibility = if (enable) View.GONE else View.VISIBLE
         binding.aboutValueEditUserProfileFrag.visibility = if (enable) View.VISIBLE else View.GONE
 
         if (enable) {
             binding.cityEditUserProfile.setText(binding.userCityUserProfileFrag.text.toString().removePrefix("City: "))
             binding.aboutValueEditUserProfileFrag.setText(binding.aboutValueUserProfileFrag.text.toString())
         } else {
-            // When finishing edit, you might want to save data
-            binding.userCityUserProfileFrag.text = "City: ${binding.cityEditUserProfile.text}"
-            binding.aboutValueUserProfileFrag.text = binding.aboutValueEditUserProfileFrag.text.toString()
+            // When finishing edit, save data
+            val newAbout = binding.aboutValueEditUserProfileFrag.text.toString()
+            val newCity = binding.cityEditUserProfile.text.toString()
+            // TODO: Replace with actual user ID
+            userDataViewModel.updateUserField(requireContext(), "user@example.com", newAbout, newCity)
+
+            binding.userCityUserProfileFrag.text = "City: ${newCity}"
+            binding.aboutValueUserProfileFrag.text = newAbout
         }
     }
 
@@ -198,11 +194,14 @@ class UserFragment : Fragment(), CellClickListener {
             }
             .setNegativeButton("Delete") { _, _ ->
                 // TODO: Implement delete post
+                // TODO: Replace with actual user ID
+                userDataViewModel.deleteUserPost("user@example.com", name)
+                viewModel.getAllPosts("user@example.com")
             }
             .setNeutralButton("Cancel", null)
             .show()
 
-        Toast.makeText(requireContext(), "You Clicked $name", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "You Clicked ${name}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
