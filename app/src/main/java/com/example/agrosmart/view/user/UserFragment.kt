@@ -1,5 +1,4 @@
 package com.example.agrosmart.view.user
-
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -15,18 +14,28 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.semantics.setText
+import androidx.compose.ui.semantics.text
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.glance.visibility
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.map
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.agrosmart.adapter.PostListUserProfileAdapter
 import com.example.agrosmart.databinding.FragmentUserBinding
+import com.example.agrosmart.model.UserProfilePost
 import com.example.agrosmart.utilities.CellClickListener
 import com.example.agrosmart.viewmodel.UserDataViewModel
 import com.example.agrosmart.viewmodel.UserProfilePostsViewModel
+import com.google.firebase.Timestamp
 import java.io.IOException
+
+private val glance: Any
 
 class UserFragment : Fragment(), CellClickListener {
 
@@ -130,15 +139,24 @@ class UserFragment : Fragment(), CellClickListener {
     }
 
     private fun setupObservers() {
-        // TODO: Observe LiveData from ViewModels when they are implemented
-         viewModel.liveData3.observe(viewLifecycleOwner) {
-            val adapter = PostListUserProfileAdapter(requireContext(), it, this)
-            binding.userProfilePostsRecycler.adapter = adapter
-            binding.userProfilePostsRecycler.layoutManager = LinearLayoutManager(requireContext())
+        viewModel.liveData3.observe(viewLifecycleOwner) { snapshots ->
+            if (snapshots != null) {
+                val posts = snapshots.map { doc ->
+                    UserProfilePost(
+                        id = doc.id,
+                        title = doc.getString("title") ?: "",
+                        timeStamp = (doc.get("timestamp") as? Timestamp)?.seconds ?: 0L,
+                        imageUrl = doc.getString("imageUrl")
+                    )
+                }
+                val adapter = PostListUserProfileAdapter(requireContext(), posts, this)
+                binding.userProfilePostsRecycler.adapter = adapter
+                binding.userProfilePostsRecycler.layoutManager = LinearLayoutManager(requireContext())
+            }
         }
 
         // userDataViewModel.userliveData.observe(viewLifecycleOwner) {
-            // Update UI with user data from new database
+        // Update UI with user data from new database
         // }
     }
 
@@ -190,10 +208,5 @@ class UserFragment : Fragment(), CellClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = UserFragment()
     }
 }
