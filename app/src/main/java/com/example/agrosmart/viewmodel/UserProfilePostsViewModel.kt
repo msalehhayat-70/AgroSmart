@@ -13,21 +13,20 @@ class UserProfilePostsViewModel : ViewModel() {
 
     fun getAllPosts(userId: String?) {
         if (userId.isNullOrEmpty()) {
-            Log.e("UserPrlPostsViewModel", "User ID is null or empty.")
             postsLiveData.value = emptyList()
+            Log.e("UserProfilePostsVM", "User ID is null or empty")
             return
         }
 
-        val firebaseFirestore = FirebaseFirestore.getInstance()
-
-        firebaseFirestore.collection("posts").whereEqualTo("userID", userId)
+        FirebaseFirestore.getInstance().collection("posts")
+            .whereEqualTo("userID", userId)
             .get()
             .addOnSuccessListener { querySnapshot: QuerySnapshot ->
                 postsLiveData.value = querySnapshot.documents
-                Log.d("UserPrlPostsViewModel", "Updated data with ${querySnapshot.size()} documents.")
+                Log.d("UserProfilePostsVM", "Fetched ${querySnapshot.size()} posts")
             }
-            .addOnFailureListener { exception ->
-                Log.e("UserPrlPostsViewModel", "Error getting documents: ", exception)
+            .addOnFailureListener { e ->
+                Log.e("UserProfilePostsVM", "Error fetching posts", e)
                 postsLiveData.value = emptyList()
             }
     }

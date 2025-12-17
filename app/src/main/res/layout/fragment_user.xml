@@ -46,6 +46,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
+            <!-- User Profile Image -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userImageUserFrag"
                 android:layout_width="100dp"
@@ -57,6 +58,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- User Name -->
             <TextView
                 android:id="@+id/userNameUserProfileFrag"
                 android:layout_width="wrap_content"
@@ -68,6 +70,7 @@
                 app:layout_constraintStart_toEndOf="@+id/userImageUserFrag"
                 app:layout_constraintTop_toTopOf="@+id/userImageUserFrag" />
 
+            <!-- User Email -->
             <TextView
                 android:id="@+id/userEmailUserProfileFrag"
                 android:layout_width="wrap_content"
@@ -76,6 +79,7 @@
                 app:layout_constraintStart_toStartOf="@+id/userNameUserProfileFrag"
                 app:layout_constraintTop_toBottomOf="@+id/userNameUserProfileFrag" />
 
+            <!-- User City -->
             <TextView
                 android:id="@+id/userCityUserProfileFrag"
                 android:layout_width="wrap_content"
@@ -84,6 +88,7 @@
                 app:layout_constraintStart_toStartOf="@+id/userEmailUserProfileFrag"
                 app:layout_constraintTop_toBottomOf="@+id/userEmailUserProfileFrag" />
 
+            <!-- About Me TextView -->
             <TextView
                 android:id="@+id/aboutValueUserProfileFrag"
                 android:layout_width="0dp"
@@ -94,6 +99,85 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userImageUserFrag" />
 
+            <!-- Editable About Me -->
+            <EditText
+                android:id="@+id/aboutValueEditUserProfileFrag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="About me..."
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userImageUserFrag" />
+
+            <!-- Editable City -->
+            <EditText
+                android:id="@+id/cityEditUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="City"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/userCityUserProfileFrag"
+                app:layout_constraintTop_toTopOf="@+id/userCityUserProfileFrag" />
+
+            <!-- Upload Progress Bars -->
+            <ProgressBar
+                android:id="@+id/uploadProgressBarProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/userImageUserFrag"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <ProgressBar
+                android:id="@+id/uploadBackProgressProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@+id/userBackgroundImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="NotSibling" />
+
+            <!-- Upload Buttons -->
+            <ImageView
+                android:id="@+id/uploadProfilePictureImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_upload"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/userImageUserFrag"
+                app:layout_constraintEnd_toEndOf="@+id/userImageUserFrag" />
+
+            <ImageView
+                android:id="@+id/uploadUserBackgroundImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_upload"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@+id/userBackgroundImage"
+                app:layout_constraintEnd_toEndOf="@+id/userBackgroundImage"
+                tools:ignore="NotSibling" />
+
+            <!-- Edit / Save Buttons -->
+            <ImageView
+                android:id="@+id/imageEdit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_edit"
+                app:layout_constraintTop_toTopOf="@+id/userImageUserFrag"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageView
+                android:id="@+id/imageChecked"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_check"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@+id/userImageUserFrag"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- RecyclerView for User Posts -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/userProfilePostsRecycler"
                 android:layout_width="0dp"
@@ -103,7 +187,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/aboutValueUserProfileFrag" />
 
+            <!-- Optional Posts Count -->
+            <TextView
+                android:id="@+id/userPostsCountUserProfileFrag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Posts: 0"
+                app:layout_constraintTop_toBottomOf="@+id/userCityUserProfileFrag"
+                app:layout_constraintStart_toStartOf="@+id/userCityUserProfileFrag" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

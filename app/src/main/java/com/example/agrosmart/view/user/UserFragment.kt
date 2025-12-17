@@ -7,18 +7,12 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -28,8 +22,12 @@ import com.example.agrosmart.model.UserProfilePost
 import com.example.agrosmart.utilities.CellClickListener
 import com.example.agrosmart.viewmodel.UserDataViewModel
 import com.example.agrosmart.viewmodel.UserProfilePostsViewModel
-import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.Timestamp
 import java.io.IOException
+import java.security.Timestamp
+
+private val Timestamp?.seconds: Long
 
 class UserFragment : Fragment(), CellClickListener {
 
@@ -42,35 +40,33 @@ class UserFragment : Fragment(), CellClickListener {
     private var bitmap: Bitmap? = null
     private var uploadProfOrBack: Int? = null
 
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            if (data?.data != null) {
-                val filePath = data.data
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, filePath)
-                    if (bitmap != null) {
-                        if (uploadProfOrBack == 0) {
-                            binding.userImageUserFrag.setImageBitmap(bitmap)
-                        } else if (uploadProfOrBack == 1) {
-                            binding.userBackgroundImage.setImageBitmap(bitmap)
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val filePath = data?.data
+                if (filePath != null) {
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, filePath)
+                        bitmap?.let {
+                            if (uploadProfOrBack == 0) binding.userImageUserFrag.setImageBitmap(it)
+                            else if (uploadProfOrBack == 1) binding.userBackgroundImage.setImageBitmap(it)
+
+                            Toast.makeText(requireContext(), "Image selected. Ready to upload.", Toast.LENGTH_SHORT).show()
                         }
-                        // TODO: Here you would initiate the upload to your new database.
-                        Toast.makeText(requireContext(), "Image selected. Ready to upload.", Toast.LENGTH_SHORT).show()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     }
-                } catch (e: IOException) {
-                    e.printStackTrace()
                 }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[UserProfilePostsViewModel::class.java]
         userDataViewModel = ViewModelProvider(requireActivity())[UserDataViewModel::class.java]
 
-        // TODO: Replace with actual user ID from your authentication system
+        // TODO: Replace with actual authenticated user ID
         val userId = "user@example.com"
         userDataViewModel.getUserData(userId)
         viewModel.getAllPosts(userId)
@@ -88,67 +84,64 @@ class UserFragment : Fragment(), CellClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Profile"
-        setupMenu()
         setupUI()
         setupObservers()
     }
 
-    private fun setupMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean = true
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
     private fun setupUI() {
         binding.cityEditUserProfile.visibility = View.GONE
-        binding.uploadProgressBarProfile.visibility = View.GONE
-        binding.uploadBackProgressProfile.visibility = View.GONE
+        binding.aboutValueEditUserProfileFrag.visibility = View.GONE
+        binding.uploadProfilePictureImage.visibility = View.GONE
+        binding.uploadUserBackgroundImage.visibility = View.GONE
+        binding.imageChecked.visibility = View.GONE
 
         binding.uploadUserBackgroundImage.setOnClickListener { selectImage(1) }
         binding.uploadProfilePictureImage.setOnClickListener { selectImage(0) }
         binding.imageEdit.setOnClickListener { toggleEditMode(true) }
         binding.imageChecked.setOnClickListener { toggleEditMode(false) }
+
+        // RecyclerView layout manager
+        binding.userProfilePostsRecycler.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupObservers() {
+
+        // Posts LiveData
         viewModel.postsLiveData.observe(viewLifecycleOwner) { snapshots ->
-            if (snapshots != null) {
-                val posts = snapshots.map { doc ->
-                    UserProfilePost(
-                        id = doc.id,
-                        title = doc.getString("title") ?: "",
-                        timeStamp = (doc.get("timestamp") as? Timestamp)?.seconds ?: 0L,
-                        imageUrl = doc.getString("imageUrl")
-                    )
-                }
-                val adapter = PostListUserProfileAdapter(requireContext(), posts, this)
-                binding.userProfilePostsRecycler.adapter = adapter
-                binding.userProfilePostsRecycler.layoutManager = LinearLayoutManager(requireContext())
-            }
+            val posts = snapshots?.map { doc ->
+                UserProfilePost(
+                    id = doc.id,
+                    title = doc.getString("title") ?: "",
+                    timeStamp = (doc.get("timestamp") as? Timestamp)?.seconds ?: 0L,
+                    imageUrl = doc.getString("imageUrl")
+                )
+            } ?: emptyList()
+
+            val adapter = PostListUserProfileAdapter(requireContext(), posts, this)
+            binding.userProfilePostsRecycler.adapter = adapter
         }
 
+        // User data LiveData
         userDataViewModel.userliveData.observe(viewLifecycleOwner) { doc ->
-            if (doc != null && doc.exists()) {
-                binding.userNameUserProfileFrag.text = doc.getString("name") ?: "User Name"
-                binding.userCityUserProfileFrag.text = "City: ${doc.getString("city") ?: "Unknown"}"
-                val posts = doc.get("posts") as? List<*>
-                binding.userPostsCountUserProfileFrag.text = "Posts: ${posts?.size ?: 0}"
-                binding.userEmailUserProfileFrag.text = doc.getString("email") ?: "user@example.com"
-                binding.aboutValueUserProfileFrag.text = doc.getString("about") ?: "About me..."
+            doc?.let {
+                if (it.exists()) {
+                    binding.userNameUserProfileFrag.text = it.getString("name") ?: "User Name"
+                    binding.userCityUserProfileFrag.text = "City: ${it.getString("city") ?: "Unknown"}"
+                    binding.userEmailUserProfileFrag.text = it.getString("email") ?: "user@example.com"
+                    binding.aboutValueUserProfileFrag.text = it.getString("about") ?: "About me..."
+                    binding.userPostsCountUserProfileFrag.text =
+                        "Posts: ${(it.get("posts") as? List<*>)?.size ?: 0}"
 
-                val profileImageUrl = doc.getString("profileImage")
-                if (!profileImageUrl.isNullOrEmpty()) {
-                    Glide.with(requireContext()).load(profileImageUrl).into(binding.userImageUserFrag)
-                }
+                    it.getString("profileImage")?.let { url ->
+                        Glide.with(requireContext()).load(url).into(binding.userImageUserFrag)
+                    }
 
-                val backgroundImageUrl = doc.getString("backImage")
-                if (!backgroundImageUrl.isNullOrEmpty()) {
-                    Glide.with(requireContext()).load(backgroundImageUrl).into(binding.userBackgroundImage)
+                    it.getString("backImage")?.let { url ->
+                        Glide.with(requireContext()).load(url).into(binding.userBackgroundImage)
+                    }
+                } else {
+                    binding.userNameUserProfileFrag.text = "User not found"
                 }
-            } else {
-                // Handle case where user data is not found or failed to load
-                binding.userNameUserProfileFrag.text = "User not found"
             }
         }
     }
@@ -163,24 +156,23 @@ class UserFragment : Fragment(), CellClickListener {
 
     private fun toggleEditMode(enable: Boolean) {
         val visibility = if (enable) View.VISIBLE else View.GONE
+        binding.cityEditUserProfile.visibility = visibility
+        binding.aboutValueEditUserProfileFrag.visibility = visibility
         binding.uploadProfilePictureImage.visibility = visibility
         binding.uploadUserBackgroundImage.visibility = visibility
         binding.imageChecked.visibility = visibility
         binding.imageEdit.visibility = if (enable) View.GONE else View.VISIBLE
-        binding.cityEditUserProfile.visibility = visibility
-        binding.aboutValueEditUserProfileFrag.visibility = if (enable) View.VISIBLE else View.GONE
 
         if (enable) {
             binding.cityEditUserProfile.setText(binding.userCityUserProfileFrag.text.toString().removePrefix("City: "))
             binding.aboutValueEditUserProfileFrag.setText(binding.aboutValueUserProfileFrag.text.toString())
         } else {
-            // When finishing edit, save data
-            val newAbout = binding.aboutValueEditUserProfileFrag.text.toString()
             val newCity = binding.cityEditUserProfile.text.toString()
+            val newAbout = binding.aboutValueEditUserProfileFrag.text.toString()
             // TODO: Replace with actual user ID
             userDataViewModel.updateUserField(requireContext(), "user@example.com", newAbout, newCity)
 
-            binding.userCityUserProfileFrag.text = "City: ${newCity}"
+            binding.userCityUserProfileFrag.text = "City: $newCity"
             binding.aboutValueUserProfileFrag.text = newAbout
         }
     }
@@ -189,11 +181,8 @@ class UserFragment : Fragment(), CellClickListener {
         AlertDialog.Builder(requireActivity())
             .setTitle("Your Post")
             .setMessage("Do you want to edit your post?")
-            .setPositiveButton("View") { _, _ ->
-                // TODO: Implement view post
-            }
+            .setPositiveButton("View") { _, _ -> }
             .setNegativeButton("Delete") { _, _ ->
-                // TODO: Implement delete post
                 // TODO: Replace with actual user ID
                 userDataViewModel.deleteUserPost("user@example.com", name)
                 viewModel.getAllPosts("user@example.com")
@@ -201,7 +190,7 @@ class UserFragment : Fragment(), CellClickListener {
             .setNeutralButton("Cancel", null)
             .show()
 
-        Toast.makeText(requireContext(), "You Clicked ${name}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "You clicked $name", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

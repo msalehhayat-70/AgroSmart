@@ -1,4 +1,4 @@
-package com.project.farmingapp.viewmodel
+package com.example.agrosmart.viewmodel
 
 import androidx.lifecycle.LiveData
 
