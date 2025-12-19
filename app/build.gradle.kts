@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt") // ✅ kapt properly added
-    id("com.google.gms.google-services") // Firebase plugin
+    id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -44,14 +44,9 @@ android {
 }
 
 dependencies {
-
     // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-
-    // Firebase Firestore
     implementation("com.google.firebase:firebase-firestore-ktx")
-
-    // Firebase Realtime Database (if needed)
     implementation("com.google.firebase:firebase-database-ktx")
 
     // AndroidX & UI
@@ -66,9 +61,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
-    // Glide (image loading)
+    // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0") // ✅ kapt
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     // Networking & JSON
     implementation("com.google.code.gson:gson:2.10.1")

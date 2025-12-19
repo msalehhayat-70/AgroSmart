@@ -9,15 +9,17 @@ class SocialMediaViewModel : ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    fun getUserProfileImage(userId: String): LiveData<String> {
-        val profileImage = MutableLiveData<String>()
+    fun getUserProfileImage(userId: String): LiveData<String?> {
+        val profileImage = MutableLiveData<String?>()
+
         firestore.collection("users").document(userId).get()
-            .addOnSuccessListener {
-                val image = it.get("profileImage")?.toString()
-                if (!image.isNullOrEmpty()) {
-                    profileImage.value = image
-                }
+            .addOnSuccessListener { document ->
+                profileImage.value = document.getString("profileImage")
             }
+            .addOnFailureListener {
+                profileImage.value = null
+            }
+
         return profileImage
     }
 }

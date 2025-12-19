@@ -10,7 +10,7 @@ class WeatherViewModel : ViewModel() {
 
     private val repository = WeatherRepository()
 
-    val weatherData: LiveData<WeatherRootList?> = repository.weatherData
+    val weatherData: LiveData<WeatherRootList> = repository.data
     val coordinates = MutableLiveData<List<String>>()
 
     fun updateCoordinates(newCoordinates: List<String>) {

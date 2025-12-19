@@ -12,22 +12,43 @@ class MyOrderViewModel : ViewModel() {
     val myOrdersWithProducts: LiveData<List<Pair<MyOrder, Product>>> = _myOrdersWithProducts
 
     fun loadMyOrders() {
-        // Placeholder data. In a real app, this would come from a repository.
+
         val placeholderOrders = listOf(
-            MyOrder("1", 2, 469, 50, "123456", "Shipped", "01/01/2024"),
-            MyOrder("2", 1, 799, 60, "654321", "Delivered", "02/01/2024")
+            MyOrder("1", 2, 469, 50, "1", "Shipped", "01/01/2024"),
+            MyOrder("2", 1, 799, 60, "2", "Delivered", "02/01/2024")
         )
+
         val placeholderProducts = listOf(
-            Product("1", "Organic Fertilizer", 469, 50, "Agro Retailers", "In Stock", listOf("")),
-            Product("2", "Pesticide Spray", 799, 60, "Farm Essentials", "In Stock", listOf(""))
+            Product(
+                "1",
+                "Organic Fertilizer",
+                469,
+                50,
+                "Agro Retailers",
+                "In Stock",
+                listOf(""),
+                4.5f   // ✅ rating added
+            ),
+            Product(
+                "2",
+                "Pesticide Spray",
+                799,
+                60,
+                "Farm Essentials",
+                "In Stock",
+                listOf(""),
+                4.0f   // ✅ rating added
+            )
         )
 
         val productsById = placeholderProducts.associateBy { it.id }
+
         val detailedOrders = placeholderOrders.mapNotNull { order ->
-            productsById[order.productId]?.let {
-                Pair(order, it)
+            productsById[order.productId]?.let { product ->
+                Pair(order, product)
             }
         }
+
         _myOrdersWithProducts.postValue(detailedOrders)
     }
 }

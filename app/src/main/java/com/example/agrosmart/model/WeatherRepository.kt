@@ -1,10 +1,9 @@
-package com.project.farmingapp.model
+package com.example.agrosmart.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.project.farmingapp.model.data.WeatherRootList
-import com.project.farmingapp.viewmodel.WeatherListener
+import com.example.agrosmart.model.WeatherRootList
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,9 +12,9 @@ class WeatherRepository {
 
     val data = MutableLiveData<WeatherRootList>()
 
-    fun getWeather(): LiveData<String> {
+    fun getWeather(lat: String, lon: String): LiveData<String> {
         val response: Call<WeatherRootList> =
-            WeatherApi.weatherInstances.getWeather("23.0225", "72.5714")
+            WeatherService.weatherInstance.getWeather(lat, lon)
 
         val weathRes = MutableLiveData<String>()
 

@@ -22,12 +22,8 @@ import com.example.agrosmart.model.UserProfilePost
 import com.example.agrosmart.utilities.CellClickListener
 import com.example.agrosmart.viewmodel.UserDataViewModel
 import com.example.agrosmart.viewmodel.UserProfilePostsViewModel
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Timestamp
+import com.google.firebase.Timestamp
 import java.io.IOException
-import java.security.Timestamp
-
-private val Timestamp?.seconds: Long
 
 class UserFragment : Fragment(), CellClickListener {
 
@@ -43,16 +39,25 @@ class UserFragment : Fragment(), CellClickListener {
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                val filePath = data?.data
+                val filePath = result.data?.data
                 if (filePath != null) {
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, filePath)
-                        bitmap?.let {
-                            if (uploadProfOrBack == 0) binding.userImageUserFrag.setImageBitmap(it)
-                            else if (uploadProfOrBack == 1) binding.userBackgroundImage.setImageBitmap(it)
+                        bitmap = MediaStore.Images.Media.getBitmap(
+                            requireActivity().contentResolver,
+                            filePath
+                        )
 
-                            Toast.makeText(requireContext(), "Image selected. Ready to upload.", Toast.LENGTH_SHORT).show()
+                        bitmap?.let {
+                            if (uploadProfOrBack == 0)
+                                binding.userImageUserFrag.setImageBitmap(it)
+                            else
+                                binding.userBackgroundImage.setImageBitmap(it)
+
+                            Toast.makeText(
+                                requireContext(),
+                                "Image selected successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -63,17 +68,18 @@ class UserFragment : Fragment(), CellClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel = ViewModelProvider(requireActivity())[UserProfilePostsViewModel::class.java]
         userDataViewModel = ViewModelProvider(requireActivity())[UserDataViewModel::class.java]
 
-        // TODO: Replace with actual authenticated user ID
         val userId = "user@example.com"
         userDataViewModel.getUserData(userId)
         viewModel.getAllPosts(userId)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUserBinding.inflate(inflater, container, false)
@@ -84,6 +90,7 @@ class UserFragment : Fragment(), CellClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Profile"
+
         setupUI()
         setupObservers()
     }
@@ -95,19 +102,20 @@ class UserFragment : Fragment(), CellClickListener {
         binding.uploadUserBackgroundImage.visibility = View.GONE
         binding.imageChecked.visibility = View.GONE
 
-        binding.uploadUserBackgroundImage.setOnClickListener { selectImage(1) }
         binding.uploadProfilePictureImage.setOnClickListener { selectImage(0) }
+        binding.uploadUserBackgroundImage.setOnClickListener { selectImage(1) }
+
         binding.imageEdit.setOnClickListener { toggleEditMode(true) }
         binding.imageChecked.setOnClickListener { toggleEditMode(false) }
 
-        // RecyclerView layout manager
-        binding.userProfilePostsRecycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.userProfilePostsRecycler.layoutManager =
+            LinearLayoutManager(requireContext())
     }
 
     private fun setupObservers() {
 
-        // Posts LiveData
         viewModel.postsLiveData.observe(viewLifecycleOwner) { snapshots ->
+
             val posts = snapshots?.map { doc ->
                 UserProfilePost(
                     id = doc.id,
@@ -117,28 +125,41 @@ class UserFragment : Fragment(), CellClickListener {
                 )
             } ?: emptyList()
 
-            val adapter = PostListUserProfileAdapter(requireContext(), posts, this)
-            binding.userProfilePostsRecycler.adapter = adapter
+            binding.userProfilePostsRecycler.adapter =
+                PostListUserProfileAdapter(requireContext(), posts, this)
         }
 
-        // User data LiveData
         userDataViewModel.userliveData.observe(viewLifecycleOwner) { doc ->
             doc?.let {
                 if (it.exists()) {
-                    binding.userNameUserProfileFrag.text = it.getString("name") ?: "User Name"
-                    binding.userCityUserProfileFrag.text = "City: ${it.getString("city") ?: "Unknown"}"
-                    binding.userEmailUserProfileFrag.text = it.getString("email") ?: "user@example.com"
-                    binding.aboutValueUserProfileFrag.text = it.getString("about") ?: "About me..."
+
+                    binding.userNameUserProfileFrag.text =
+                        it.getString("name") ?: "User Name"
+
+                    binding.userCityUserProfileFrag.text =
+                        "City: ${it.getString("city") ?: "Unknown"}"
+
+                    binding.userEmailUserProfileFrag.text =
+                        it.getString("email") ?: "user@example.com"
+
+                    binding.aboutValueUserProfileFrag.text =
+                        it.getString("about") ?: "About me..."
+
                     binding.userPostsCountUserProfileFrag.text =
                         "Posts: ${(it.get("posts") as? List<*>)?.size ?: 0}"
 
                     it.getString("profileImage")?.let { url ->
-                        Glide.with(requireContext()).load(url).into(binding.userImageUserFrag)
+                        Glide.with(requireContext())
+                            .load(url)
+                            .into(binding.userImageUserFrag)
                     }
 
                     it.getString("backImage")?.let { url ->
-                        Glide.with(requireContext()).load(url).into(binding.userBackgroundImage)
+                        Glide.with(requireContext())
+                            .load(url)
+                            .into(binding.userBackgroundImage)
                     }
+
                 } else {
                     binding.userNameUserProfileFrag.text = "User not found"
                 }
@@ -146,16 +167,19 @@ class UserFragment : Fragment(), CellClickListener {
         }
     }
 
-    private fun selectImage(uploadType: Int) {
-        uploadProfOrBack = uploadType
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "image/*"
-        }
+    private fun selectImage(type: Int) {
+        uploadProfOrBack = type
+        val intent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
         pickImageLauncher.launch(intent)
     }
 
     private fun toggleEditMode(enable: Boolean) {
+
         val visibility = if (enable) View.VISIBLE else View.GONE
+
         binding.cityEditUserProfile.visibility = visibility
         binding.aboutValueEditUserProfileFrag.visibility = visibility
         binding.uploadProfilePictureImage.visibility = visibility
@@ -163,34 +187,32 @@ class UserFragment : Fragment(), CellClickListener {
         binding.imageChecked.visibility = visibility
         binding.imageEdit.visibility = if (enable) View.GONE else View.VISIBLE
 
-        if (enable) {
-            binding.cityEditUserProfile.setText(binding.userCityUserProfileFrag.text.toString().removePrefix("City: "))
-            binding.aboutValueEditUserProfileFrag.setText(binding.aboutValueUserProfileFrag.text.toString())
-        } else {
-            val newCity = binding.cityEditUserProfile.text.toString()
-            val newAbout = binding.aboutValueEditUserProfileFrag.text.toString()
-            // TODO: Replace with actual user ID
-            userDataViewModel.updateUserField(requireContext(), "user@example.com", newAbout, newCity)
+        if (!enable) {
+            val city = binding.cityEditUserProfile.text.toString()
+            val about = binding.aboutValueEditUserProfileFrag.text.toString()
 
-            binding.userCityUserProfileFrag.text = "City: $newCity"
-            binding.aboutValueUserProfileFrag.text = newAbout
+            userDataViewModel.updateUserField(
+                requireContext(),
+                "user@example.com",
+                about,
+                city
+            )
+
+            binding.userCityUserProfileFrag.text = "City: $city"
+            binding.aboutValueUserProfileFrag.text = about
         }
     }
 
     override fun onCellClickListener(name: String) {
         AlertDialog.Builder(requireActivity())
             .setTitle("Your Post")
-            .setMessage("Do you want to edit your post?")
-            .setPositiveButton("View") { _, _ -> }
-            .setNegativeButton("Delete") { _, _ ->
-                // TODO: Replace with actual user ID
+            .setMessage("Do you want to delete this post?")
+            .setPositiveButton("Delete") { _, _ ->
                 userDataViewModel.deleteUserPost("user@example.com", name)
                 viewModel.getAllPosts("user@example.com")
             }
-            .setNeutralButton("Cancel", null)
+            .setNegativeButton("Cancel", null)
             .show()
-
-        Toast.makeText(requireContext(), "You clicked $name", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
