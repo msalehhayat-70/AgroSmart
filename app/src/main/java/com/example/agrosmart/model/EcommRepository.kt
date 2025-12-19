@@ -17,15 +17,15 @@ class EcommRepository {
     fun getAllProducts() {
         // Placeholder data
         val placeholderProducts = listOf(
-            Product("1", "Organic Fertilizer", 469, 50, "Agro Retailers", "In Stock", listOf("")),
-            Product("2", "Pesticide Spray", 799, 60, "Farm Essentials", "In Stock", listOf(""))
+            Product("1", "Organic Fertilizer", 469, 50, "Agro Retailers", "In Stock", listOf(""), 4.5f),
+            Product("2", "Pesticide Spray", 799, 60, "Farm Essentials", "In Stock", listOf(""), 4.5f)
         )
         _products.postValue(placeholderProducts)
     }
 
     fun getProductById(id: String) {
         // Placeholder data
-        val placeholderProduct = Product(id, "Organic Fertilizer", 469, 50, "Agro Retailers", "In Stock", listOf(""))
+        val placeholderProduct = Product(id, "Organic Fertilizer", 469, 50, "Agro Retailers", "In Stock", listOf(""), 4.5f)
         _product.postValue(placeholderProduct)
     }
 

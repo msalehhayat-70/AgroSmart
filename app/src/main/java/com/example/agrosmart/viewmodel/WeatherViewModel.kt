@@ -3,6 +3,7 @@ package com.example.agrosmart.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.example.agrosmart.model.WeatherRepository
 import com.example.agrosmart.model.WeatherRootList
 
@@ -10,12 +11,16 @@ class WeatherViewModel : ViewModel() {
 
     private val repository = WeatherRepository()
 
-    val weatherData: LiveData<WeatherRootList> = repository.data
-    val coordinates = MutableLiveData<List<String>>()
+    private val _coordinates = MutableLiveData<List<String>>()
+    val coordinates: LiveData<List<String>> = _coordinates
 
-    fun updateCoordinates(newCoordinates: List<String>) {
-        coordinates.value = newCoordinates
-        // Fetch new weather data whenever coordinates change
-        repository.getWeather(newCoordinates[0], newCoordinates[1])
+    val weatherData: LiveData<WeatherRootList> = _coordinates.switchMap { coords ->
+        repository.getWeather(coords[0], coords[1])
+    }
+
+    fun setCoordinates(newCoordinates: List<String>) {
+        if (_coordinates.value != newCoordinates) {
+            _coordinates.value = newCoordinates
+        }
     }
 }

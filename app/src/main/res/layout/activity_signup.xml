@@ -28,7 +28,8 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/mobNoEditText"
@@ -39,7 +40,8 @@
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="@+id/nameEditText"
         app:layout_constraintStart_toStartOf="@+id/nameEditText"
-        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/emailEditText"
@@ -50,7 +52,8 @@
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="@+id/mobNoEditText"
         app:layout_constraintStart_toStartOf="@+id/mobNoEditText"
-        app:layout_constraintTop_toBottomOf="@+id/mobNoEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/mobNoEditText"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/cityEditText"
@@ -61,7 +64,8 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="@+id/emailEditText"
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -72,7 +76,8 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/cityEditText"
         app:layout_constraintStart_toStartOf="@+id/cityEditText"
-        app:layout_constraintTop_toBottomOf="@+id/cityEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/cityEditText"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/signupButton"

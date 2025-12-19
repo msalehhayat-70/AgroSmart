@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.get
 import androidx.viewpager2.widget.ViewPager2
 import com.example.agrosmart.R
@@ -25,37 +26,37 @@ class IntroActivity : AppCompatActivity() {
             IntroData(
                 "Welcome to AgroSmart",
                 "Best Guide and Helper for any Farmer. Provides various features at one place!",
-                R.drawable.intro_first_bg
+                R.drawable.intro_first
             ),
             IntroData(
                 "Read Articles",
                 "Read Online articles related to Farming Concepts, Technologies and other useful knowledge.",
-                R.drawable.intro_read_bg
+                R.drawable.intro_read
             ),
             IntroData(
                 "Share Knowledge",
-                "Social Media let\'s you share knowledge with other farmers!\nCreate your own posts using Image/Video/Texts.",
-                R.drawable.intro_share_bg
+                "Social Media let's you share knowledge with other farmers!\nCreate your own posts using Image/Video/Texts.",
+                R.drawable.intro_share
             ),
             IntroData(
                 "E-Commerce",
                 "Buy / Sell Agriculture related products & Manage your Cart Online",
-                R.drawable.intro_ecomm_bg
+                R.drawable.intro_ecomm
             ),
             IntroData(
                 "Weather Forecast",
                 "Get Notified for Daily Weather Conditions. 24x7 Data",
-                R.drawable.intro_weather_bg
+                R.drawable.intro_weather
             ),
             IntroData(
-                "PAMRA Statistics",
-                "Get updates PAMRA Pricing and Commodity details everyday.",
-                R.drawable.intro_statistics_bg
+                "APMC Statistics",
+                "Get updates APMC Pricing and Commodity details everyday.",
+                R.drawable.intro_statistics
             ),
             IntroData(
-                "Let\'s Grow Together",
+                "Let's Grow Together",
                 "- AgroSmart",
-                R.drawable.intro_help_bg
+                R.drawable.intro_help
             )
         )
     )
@@ -95,13 +96,15 @@ class IntroActivity : AppCompatActivity() {
             startActivity(it)
         }
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit().putBoolean("firstTime", false).apply()
+        sharedPreferences.edit {
+            putBoolean("firstTime", false)
+        }
         finish()
     }
 
     private fun setupIndicators() {
         val indicators = arrayOfNulls<ImageView>(introSliderAdapter.itemCount)
-        val layoutParams: LinearLayout.LayoutParams =
+        val layoutParams: LinearLayout.LayoutParams = 
             LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(8, 0, 8, 0)
 
@@ -126,9 +129,9 @@ class IntroActivity : AppCompatActivity() {
         }
 
         if (index == introSliderAdapter.itemCount - 1) {
-            binding.nextBtn.text = "Get Started"
+            binding.nextBtn.text = getString(R.string.get_started)
         } else {
-            binding.nextBtn.text = "Next"
+            binding.nextBtn.text = getString(R.string.next)
         }
     }
 }

@@ -41,7 +41,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     }
 
     private fun setupToolbarAndDrawer() {
-        setSupportActionBar(binding.appBarMain.toolbar)
         toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.appBarMain.toolbar, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()

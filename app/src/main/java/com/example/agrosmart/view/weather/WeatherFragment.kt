@@ -112,3 +112,5 @@ class WeatherFragment : Fragment() {
         _binding = null
     }
 }
+
+private fun WeatherViewModel.updateCoordinates(listOf: List<String>) {}

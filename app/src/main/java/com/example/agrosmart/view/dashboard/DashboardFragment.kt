@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.agrosmart.R
 import com.example.agrosmart.adapter.DashboardEcomItemAdapter
 import com.example.agrosmart.databinding.FragmentDashboardBinding
-import com.example.agrosmart.model.Product
-import com.example.agrosmart.model.WeatherRootList
+import com.example.agrosmart.model.DashboardEcomItem
 import com.example.agrosmart.utilities.CellClickListener
 import com.example.agrosmart.view.articles.ArticleListFragment
 import com.example.agrosmart.view.ecommerce.EcommerceItemFragment
@@ -45,7 +45,7 @@ class DashboardFragment : Fragment(), CellClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as AppCompatActivity).supportActionBar?.title = "Agri India"
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.action_bar_title)
 
         weatherViewModel = ViewModelProvider(requireActivity()).get(WeatherViewModel::class.java)
         ecommViewModel = ViewModelProvider(requireActivity()).get(EcommViewModel::class.java)
@@ -56,25 +56,32 @@ class DashboardFragment : Fragment(), CellClickListener {
     }
 
     private fun setupWeather() {
-        weatherViewModel.getCoordinates().observe(viewLifecycleOwner) { coordinates ->
-            weatherViewModel.updateNewData()
-            val city = coordinates[2]
-            weatherViewModel.newDataTrial.observe(viewLifecycleOwner) { weatherData ->
-                binding.weathTempTextWeathFrag.text = "${(weatherData.list[0].main.temp - 273).toInt()}\u2103"
-                binding.humidityTextWeathFrag.text = "Humidity: ${weatherData.list[0].main.humidity} %"
-                binding.windTextWeathFrag.text = "Wind: ${weatherData.list[0].wind.speed} km/hr"
+        weatherViewModel.weatherData.observe(viewLifecycleOwner) { weatherData ->
+            if (_binding != null && weatherData != null && weatherData.list.isNotEmpty()) {
+                val firstWeather = weatherData.list[0]
+                binding.weathTempTextWeathFrag.text = getString(R.string.weather_temp, (firstWeather.main.temp - 273).toInt())
+                binding.humidityTextWeathFrag.text = getString(R.string.weather_humidity, firstWeather.main.humidity)
+                binding.windTextWeathFrag.text = getString(R.string.weather_wind, firstWeather.wind.speed)
+                val city = weatherViewModel.coordinates.value?.getOrNull(2) ?: getString(R.string.unknown_city)
                 binding.weatherCityTitle.text = city
-                val iconCode = weatherData.list[0].weather[0].icon
+                val iconCode = firstWeather.weather[0].icon
                 val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"
-                Glide.with(requireContext()).load(iconUrl).into(binding.weathIconImageWeathFrag)
+                if (context != null) {
+                    Glide.with(requireContext()).load(iconUrl).into(binding.weathIconImageWeathFrag)
+                }
             }
         }
+        // Set initial coordinates to trigger weather fetch
+        weatherViewModel.setCoordinates(listOf("23.0225", "72.5714", "Ahmedabad"))
     }
 
     private fun setupEcommerce() {
-        ecommViewModel.ecommLiveData.observe(viewLifecycleOwner) { products ->
-            val itemsToShow = products.shuffled().take(4)
-            val adapterEcomm = DashboardEcomItemAdapter(requireContext(), itemsToShow, this)
+        ecommViewModel.products.observe(viewLifecycleOwner) { products ->
+            val dashboardEcomItems = products.map { product ->
+                DashboardEcomItem(product.id, product.title, product.price.toString(), product.imageUrl)
+            }
+            val itemsToShow = dashboardEcomItems.indices.toList().shuffled().take(4)
+            val adapterEcomm = DashboardEcomItemAdapter(requireContext(), dashboardEcomItems, itemsToShow, this)
             binding.dashboardEcommRecycler.adapter = adapterEcomm
             binding.dashboardEcommRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
         }
@@ -102,7 +109,7 @@ class DashboardFragment : Fragment(), CellClickListener {
     private fun navigateTo(fragment: Fragment, tag: String) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_layout, fragment, tag)
-            .setTransition(Fragment.TRANSIT_FRAGMENT_OPEN)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .addToBackStack(tag)
             .commit()
     }

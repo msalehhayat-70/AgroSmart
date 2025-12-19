@@ -44,12 +44,12 @@ class CurrentWeatherAdapter(private val context: Context, private val weatherroo
         holder.cTemp.text = "${(weatherNew.main.temp - 273.15).toInt()}\u2103"
         holder.cWeDesc.text = weatherNew.weather[0].description.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
-        holder.cTodayTitle.text = "Today, ${weatherNew.dt_txt.slice(10..15)}"
+        holder.cTodayTitle.text = "Today, ${weatherNew.dtTxt.slice(10..15)}"
 
-        holder.cMinTemp.text = "${(weatherNew.main.temp_min.toDouble() - 273.1).toInt()}\u2103"
+        holder.cMinTemp.text = "${(weatherNew.main.tempMin.toDouble() - 273.1).toInt()}\u2103"
         holder.container.animation = AnimationUtils.loadAnimation(context, R.anim.fade_scale)
 
-        holder.cMaxTemp.text = "${(weatherNew.main.temp_max.toDouble() - 273.1).toInt()}\u2103"
+        holder.cMaxTemp.text = "${(weatherNew.main.tempMax.toDouble() - 273.1).toInt()}\u2103"
         holder.cHumidity.text = "${weatherNew.main.humidity}%"
         val iconCode = weatherNew.weather[0].icon
         val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"

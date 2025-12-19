@@ -62,7 +62,7 @@ class ArticleListFragment : Fragment(), CellClickListener {
         fruitsFragment.arguments = bundle
 
         parentFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment_content_main, fruitsFragment, data)
+            .replace(R.id.frame_layout, fruitsFragment, data)
             .addToBackStack(null)
             .commit()
     }

@@ -3,24 +3,20 @@ package com.example.agrosmart.model
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.agrosmart.model.WeatherRootList
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class WeatherRepository {
 
-    val data = MutableLiveData<WeatherRootList>()
-
-    fun getWeather(lat: String, lon: String): LiveData<String> {
+    fun getWeather(lat: String, lon: String): LiveData<WeatherRootList> {
+        val data = MutableLiveData<WeatherRootList>()
         val response: Call<WeatherRootList> =
             WeatherService.weatherInstance.getWeather(lat, lon)
 
-        val weathRes = MutableLiveData<String>()
-
         response.enqueue(object : Callback<WeatherRootList> {
             override fun onFailure(call: Call<WeatherRootList>, t: Throwable) {
-                Log.d("WeatherRepository", "Error Occured")
+                Log.d("WeatherRepository", "Error Occurred: ${t.message}")
             }
 
             override fun onResponse(
@@ -28,13 +24,12 @@ class WeatherRepository {
                 response: Response<WeatherRootList>
             ) {
                 if (response.isSuccessful) {
-                    data.value = response.body()
-                    weathRes.value = "DONE"
+                    data.postValue(response.body())
                 } else {
-                    weathRes.value = "FAILED"
+                    Log.d("WeatherRepository", "Failed to get weather, code: ${response.code()}")
                 }
             }
         })
-        return weathRes
+        return data
     }
 }

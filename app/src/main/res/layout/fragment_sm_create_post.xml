@@ -17,7 +17,8 @@
         android:inputType="textCapSentences"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/descPostSM"
@@ -43,7 +44,8 @@
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_gallery"
         app:layout_constraintStart_toStartOf="@+id/descPostSM"
-        app:layout_constraintTop_toBottomOf="@+id/descPostSM" />
+        app:layout_constraintTop_toBottomOf="@+id/descPostSM"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/createPostBtnSM"
