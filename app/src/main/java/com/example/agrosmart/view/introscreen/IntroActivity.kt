@@ -25,37 +25,37 @@ class IntroActivity : AppCompatActivity() {
             IntroData(
                 "Welcome to AgroSmart",
                 "Best Guide and Helper for any Farmer. Provides various features at one place!",
-                R.drawable.intro_first
+                R.drawable.intro_first_bg
             ),
             IntroData(
                 "Read Articles",
                 "Read Online articles related to Farming Concepts, Technologies and other useful knowledge.",
-                R.drawable.intro_read
+                R.drawable.intro_read_bg
             ),
             IntroData(
                 "Share Knowledge",
                 "Social Media let\'s you share knowledge with other farmers!\nCreate your own posts using Image/Video/Texts.",
-                R.drawable.intro_share
+                R.drawable.intro_share_bg
             ),
             IntroData(
                 "E-Commerce",
                 "Buy / Sell Agriculture related products & Manage your Cart Online",
-                R.drawable.intro_ecomm
+                R.drawable.intro_ecomm_bg
             ),
             IntroData(
                 "Weather Forecast",
                 "Get Notified for Daily Weather Conditions. 24x7 Data",
-                R.drawable.intro_weather
+                R.drawable.intro_weather_bg
             ),
             IntroData(
                 "PAMRA Statistics",
                 "Get updates PAMRA Pricing and Commodity details everyday.",
-                R.drawable.intro_statistics
+                R.drawable.intro_statistics_bg
             ),
             IntroData(
                 "Let\'s Grow Together",
                 "- AgroSmart",
-                R.drawable.intro_help
+                R.drawable.intro_help_bg
             )
         )
     )
