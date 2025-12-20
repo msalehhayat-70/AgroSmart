@@ -72,7 +72,7 @@ class DashboardFragment : Fragment(), CellClickListener {
             }
         }
         // Set initial coordinates to trigger weather fetch
-        weatherViewModel.setCoordinates(listOf("23.0225", "72.5714", "Ahmedabad"))
+        weatherViewModel.setCoordinates(listOf("23.0225", "72.5714", "Lahore"))
     }
 
     private fun setupEcommerce() {
