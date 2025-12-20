@@ -31,21 +31,21 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
-            viewModel.loginmail = binding.emailEditText.text.toString()
-            viewModel.loginpwd = binding.passwordEditText.text.toString()
+            viewModel.loginEmail = binding.emailEditText.text.toString()
+            viewModel.loginPassword = binding.passwordEditText.text.toString()
             viewModel.login()
         }
     }
 
     private fun setupObservers() {
-        viewModel.login().observe(this) { result ->
+        viewModel.authResult.observe(this) { result ->
             binding.progressBar.visibility = View.GONE
             if (result == "Success") {
                 Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "Login Failed: $result", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             }
         }
     }

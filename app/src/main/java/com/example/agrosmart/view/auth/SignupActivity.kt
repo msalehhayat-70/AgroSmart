@@ -25,34 +25,26 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        binding.loginRedirectText.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
-
         binding.signupButton.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
             viewModel.name = binding.nameEditText.text.toString()
             viewModel.mobNo = binding.mobNoEditText.text.toString()
             viewModel.email = binding.emailEditText.text.toString()
-            viewModel.city = binding.cityEditText.text.toString()
             viewModel.password = binding.passwordEditText.text.toString()
+            viewModel.city = binding.cityEditText.text.toString()
             viewModel.signup()
-        }
-
-        binding.googleSignupButton.setOnClickListener {
-            Toast.makeText(this, "Google Sign-In is currently disabled.", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setupObservers() {
-        viewModel.signup().observe(this) { result ->
+        viewModel.authResult.observe(this) { result ->
             binding.progressBar.visibility = View.GONE
             if (result == "Success") {
-                Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Signup Successful", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "Signup Failed: $result", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             }
         }
     }

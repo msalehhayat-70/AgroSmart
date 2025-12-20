@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.agrosmart">
 
-    <!-- Best practice: Request both FINE and COARSE location permissions -->
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
-    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature android:name="android.hardware.location.gps"
+        tools:ignore="UnnecessaryRequiredFeature" />
 
     <application
         android:allowBackup="true"
@@ -17,42 +17,52 @@
         android:roundIcon="@drawable/er"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name="com.example.agrosmart.view.introscreen.IntroActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme2" />
 
+        <!-- ✅ Splash Screen (Launcher) -->
         <activity
-            android:name="com.example.agrosmart.view.ecommerce.RazorPayActivity"
-            android:exported="false" />
-
-        <!--
-         This is the main launcher activity.
-         It MUST be set to exported="true" to be launched by the home screen.
-        -->
-        <activity
-            android:name="com.example.agrosmart.view.dashboard.DashboardActivity"
-            android:exported="true">
+            android:name=".view.introscreen.SplashScreen"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Intro Screen (Optional) -->
         <activity
-            android:name="com.example.agrosmart.view.auth.SignupActivity"
+            android:name=".view.introscreen.IntroActivity"
             android:exported="false"
-            android:noHistory="true"
             android:theme="@style/AppTheme2" />
+
+        <!-- Login Screen -->
         <activity
-            android:name="com.example.agrosmart.view.auth.LoginActivity"
+            android:name=".view.auth.LoginActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme2" />
+
+        <!-- Signup Screen -->
+        <activity
+            android:name=".view.auth.SignupActivity"
             android:exported="false"
             android:noHistory="true"
             android:theme="@style/AppTheme2" />
 
+        <!-- Dashboard -->
+        <activity
+            android:name=".view.dashboard.DashboardActivity"
+            android:exported="true" />
+
+        <!-- RazorPay Screen -->
+        <activity
+            android:name=".view.ecommerce.RazorPayActivity"
+            android:exported="false" />
+
+        <!-- Meta Data -->
         <meta-data
             android:name="com.razorpay.ApiKey"
             android:value="@string/key_id" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

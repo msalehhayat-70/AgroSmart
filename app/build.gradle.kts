@@ -51,6 +51,7 @@ dependencies {
 
     // AndroidX & UI
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
@@ -63,6 +64,7 @@ dependencies {
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.androidx.activity)
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     // Networking & JSON

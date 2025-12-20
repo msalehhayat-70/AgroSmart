@@ -1,14 +1,15 @@
 package com.example.agrosmart.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.agrosmart.model.AuthRepository
-import java.io.Serializable
 
 class AuthViewModel : ViewModel() {
 
     private val repository = AuthRepository()
 
+    // Signup fields
     var name: String? = null
     var mobNo: String? = null
     var email: String? = null
@@ -16,33 +17,45 @@ class AuthViewModel : ViewModel() {
     var password: String? = null
     var userType: String? = "normal"
 
-    //login
-    var loginmail: String? = null
-    var loginpwd: String? = null
+    // Login fields
+    var loginEmail: String? = null
+    var loginPassword: String? = null
 
-    fun signup(): LiveData<String> {
-        val data = hashMapOf(
-            "name" to name,
-            "mobNo" to mobNo,
-            "email" to email,
-            "city" to city,
-            "userType" to userType,
+    private val _authResult = MutableLiveData<String>()
+    val authResult: LiveData<String> = _authResult
+
+    // Signup function
+    fun signup() {
+        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
+            _authResult.value = "Email or password cannot be empty"
+            return
+        }
+
+        val data = hashMapOf<String, Any>(
+            "name" to (name ?: ""),
+            "mobNo" to (mobNo ?: ""),
+            "email" to email!!,
+            "city" to (city ?: ""),
+            "password" to password!!,
+            "userType" to (userType ?: "normal"),
             "posts" to arrayListOf<String>(),
             "profileImage" to ""
         )
-        return repository.signInWithEmail(email!!, password!!, data)
+
+        repository.signUpUser(email!!, password!!, data).observeForever { result ->
+            _authResult.value = result
+        }
     }
 
-    fun login(): LiveData<String> {
-        return repository.logInWithEmail(loginmail!!, loginpwd!!)
-    }
+    // Login function
+    fun login() {
+        if (loginEmail.isNullOrEmpty() || loginPassword.isNullOrEmpty()) {
+            _authResult.value = "Email or password cannot be empty"
+            return
+        }
 
-    fun googleSignIn(idToken: String, email: String): LiveData<String> {
-        val data = hashMapOf(
-            "userType" to userType,
-            "posts" to arrayListOf<String>(),
-            "profileImage" to ""
-        )
-        return repository.signInToGoogle(idToken, email, data)
+        repository.loginUser(loginEmail!!, loginPassword!!).observeForever { result ->
+            _authResult.value = result
+        }
     }
 }
