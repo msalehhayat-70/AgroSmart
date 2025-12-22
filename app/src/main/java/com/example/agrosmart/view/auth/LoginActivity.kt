@@ -20,6 +20,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // The new splash screen API is handled by the theme.
+        // The system will automatically switch to your app's theme
+        // once the app is ready. No manual splash screen logic is needed.
+
         setupClickListeners()
         setupObservers()
     }
@@ -38,14 +42,19 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.authResult.observe(this) { result ->
-            binding.progressBar.visibility = View.GONE
-            if (result == "Success") {
+        viewModel.user.observe(this) { user ->
+            if (user != null) {
+                binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
-            } else {
-                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.errorMessage.observe(this) { error ->
+            if (error.isNotEmpty()) {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, error, Toast.LENGTH_LONG).show()
             }
         }
     }

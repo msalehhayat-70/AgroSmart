@@ -1,7 +1,9 @@
 package com.example.agrosmart.view.dashboard
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
@@ -12,7 +14,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.example.agrosmart.R
 import com.example.agrosmart.databinding.ActivityDashboardBinding
 import com.example.agrosmart.model.User
@@ -33,6 +34,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var toggle: ActionBarDrawerToggle
+    private val TAG = "DashboardActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,12 +89,18 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     val userProfile = document.toObject(User::class.java)
                     if (userProfile != null) {
                         navUsername.text = userProfile.name
-                        Glide.with(this).load(userProfile.profileImgUrl).placeholder(R.drawable.ic_launcher_foreground).into(navUserImage)
+                        if (userProfile.profileImageString.isNotEmpty()) {
+                            val decodedString = Base64.decode(userProfile.profileImageString, Base64.DEFAULT)
+                            val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                            navUserImage.setImageBitmap(decodedByte)
+                        }
                     }
                 }
             }.addOnFailureListener { exception ->
-                Log.e("DashboardActivity", "Error getting user document", exception)
+                Log.e(TAG, "Error getting user document from Firestore", exception)
             }
+        } else {
+            Log.d(TAG, "User is not logged in.")
         }
 
         headerView.setOnClickListener {

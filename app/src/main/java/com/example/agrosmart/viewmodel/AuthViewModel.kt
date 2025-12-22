@@ -1,61 +1,71 @@
 package com.example.agrosmart.viewmodel
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.agrosmart.model.AuthRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseUser
 
 class AuthViewModel : ViewModel() {
 
-    private val repository = AuthRepository()
+    var name = ""
+    var mobNo = ""
+    var email = ""
+    var password = ""
+    var city = ""
+    var loginEmail = ""
+    var loginPassword = ""
 
-    // Signup fields
-    var name: String? = null
-    var mobNo: String? = null
-    var email: String? = null
-    var city: String? = null
-    var password: String? = null
-    var userType: String? = "normal"
+    val user = MutableLiveData<FirebaseUser?>()
+    val errorMessage = MutableLiveData<String>()
 
-    // Login fields
-    var loginEmail: String? = null
-    var loginPassword: String? = null
+    private val firebaseAuth = FirebaseAuth.getInstance()
 
-    private val _authResult = MutableLiveData<String>()
-    val authResult: LiveData<String> = _authResult
-
-    // Signup function
     fun signup() {
-        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
-            _authResult.value = "Email or password cannot be empty"
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
+            errorMessage.postValue("Name, email, and password cannot be empty.")
             return
         }
 
-        val data = hashMapOf<String, Any>(
-            "name" to (name ?: ""),
-            "mobNo" to (mobNo ?: ""),
-            "email" to email!!,
-            "city" to (city ?: ""),
-            "password" to password!!,
-            "userType" to (userType ?: "normal"),
-            "posts" to arrayListOf<String>(),
-            "profileImage" to ""
-        )
-
-        repository.signUpUser(email!!, password!!, data).observeForever { result ->
-            _authResult.value = result
-        }
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("AuthViewModel", "Signup successful.")
+                    user.postValue(firebaseAuth.currentUser)
+                } else {
+                    Log.e("AuthViewModel", "Signup failed", task.exception)
+                    errorMessage.postValue(task.exception?.message ?: "Signup failed.")
+                }
+            }
     }
 
-    // Login function
     fun login() {
-        if (loginEmail.isNullOrEmpty() || loginPassword.isNullOrEmpty()) {
-            _authResult.value = "Email or password cannot be empty"
+        if (loginEmail.isEmpty() || loginPassword.isEmpty()) {
+            errorMessage.postValue("Email and password cannot be empty.")
             return
         }
 
-        repository.loginUser(loginEmail!!, loginPassword!!).observeForever { result ->
-            _authResult.value = result
-        }
+        firebaseAuth.signInWithEmailAndPassword(loginEmail, loginPassword)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("AuthViewModel", "Login successful.")
+                    user.postValue(firebaseAuth.currentUser)
+                } else {
+                    Log.e("AuthViewModel", "Login failed", task.exception)
+                    when (task.exception) {
+                        is FirebaseAuthInvalidUserException -> {
+                            errorMessage.postValue("Invalid Email Address.")
+                        }
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            errorMessage.postValue("Invalid Password.")
+                        }
+                        else -> {
+                            errorMessage.postValue(task.exception?.message ?: "Login failed.")
+                        }
+                    }
+                }
+            }
     }
 }

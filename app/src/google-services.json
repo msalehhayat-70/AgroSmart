@@ -1,14 +1,13 @@
 {
   "project_info": {
-    "project_number": "725788957382",
-    "firebase_url": "https://agrosmart-7fd6c-default-rtdb.firebaseio.com",
-    "project_id": "agrosmart-7fd6c",
-    "storage_bucket": "agrosmart-7fd6c.firebasestorage.app"
+    "project_number": "431939940474",
+    "project_id": "agrosmart-daa39",
+    "storage_bucket": "agrosmart-daa39.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:725788957382:android:e499ad6b5bd468e75ed5c7",
+        "mobilesdk_app_id": "1:431939940474:android:ec2436c9af52843046cbc3",
         "android_client_info": {
           "package_name": "com.example.agrosmart"
         }
@@ -16,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBZZADWSUSWnGV_ZXWbp1Kx1rVT78ZCvZs"
+          "current_key": "AIzaSyCK_xxcMwey08b5wijG3kumdMurmI2MH0o"
         }
       ],
       "services": {
