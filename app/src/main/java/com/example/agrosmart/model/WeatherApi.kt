@@ -12,7 +12,7 @@ interface WeatherApi {
     fun getWeather(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
-        @Query("appid") apiKey: String = "63259e8886cbe4d575c24358fb860b1b"
+        @Query("appid") apiKey: String = "a984bb574d07a1c17e3d3d3474f79322"
     ): Call<WeatherRootList>
 }
 

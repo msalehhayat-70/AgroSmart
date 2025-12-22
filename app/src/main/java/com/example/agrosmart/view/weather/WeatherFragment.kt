@@ -1,44 +1,44 @@
 package com.example.agrosmart.view.weather
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.agrosmart.R
-import com.example.agrosmart.adapter.CurrentWeatherAdapter
+import com.bumptech.glide.Glide
 import com.example.agrosmart.adapter.WeatherAdapter
-import com.example.agrosmart.databinding.FragmentWeatherBinding
-import com.example.agrosmart.model.CurrentWeather
+import com.example.agrosmart.databinding.FragmentWeatherDetailsBinding
 import com.example.agrosmart.viewmodel.WeatherViewModel
+import com.google.android.gms.location.LocationServices
 
 class WeatherFragment : Fragment() {
 
-    private var _binding: FragmentWeatherBinding? = null
+    private var _binding: FragmentWeatherDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: WeatherViewModel
+    private val viewModel: WeatherViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            getCurrentLocation()
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWeatherBinding.inflate(inflater, container, false)
+        _binding = FragmentWeatherDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -46,63 +46,52 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Weather Forecast"
-        setupMenu()
+
         setupObservers()
-
-        // Fetches weather for a default location. You can update this based on user's location.
-        viewModel.updateCoordinates(listOf("28.6139", "77.2090", "Delhi"))
-    }
-
-    private fun setupMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean = true
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        checkLocationPermission()
     }
 
     private fun setupObservers() {
-        viewModel.coordinates.observe(viewLifecycleOwner) { coordinates ->
-            if (coordinates.size > 2) {
-                binding.weatherCity.text = coordinates[2]
-            } else {
-                binding.weatherCity.text = getString(R.string.unknown_city)
-            }
+        viewModel.currentWeather.observe(viewLifecycleOwner) { weather ->
+            binding.weatherCity.text = weather.name
+            binding.temperature.text = "${weather.main.temp.toInt()}°C"
+            binding.weatherDescription.text = weather.weather.firstOrNull()?.description ?: ""
+            binding.minTemp.text = "${weather.main.tempMin.toInt()}°C"
+            binding.maxTemp.text = "${weather.main.tempMax.toInt()}°C"
+            binding.humidity.text = "${weather.main.humidity}%"
+
+            val iconUrl = "https://openweathermap.org/img/w/${weather.weather.firstOrNull()?.icon}.png"
+            Glide.with(this).load(iconUrl).into(binding.weatherIcon)
         }
 
-        viewModel.weatherData.observe(viewLifecycleOwner) { weatherRootList ->
-            weatherRootList?.let { root ->
-                Log.d("WeatherFragment", "Received weather data: ${root.list.size} items")
+        viewModel.forecast.observe(viewLifecycleOwner) { forecast ->
+            val adapter = WeatherAdapter(forecast)
+            binding.forecastRecyclerView.adapter = adapter
+            binding.forecastRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        }
+    }
 
-                // Filter for daily forecasts (one forecast per day around noon)
-                val dailyForecasts = root.list.filter {
-                    it.dt_txt.contains("12:00:00")
-                }
+    private fun checkLocationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                getCurrentLocation()
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
 
-                // Take the first 8 forecasts for an hourly view (next 24 hours)
-                val hourlyForecasts = root.list.take(8).map { weatherList ->
-                    CurrentWeather(
-                        main = CurrentWeather.Main(
-                            temp = weatherList.main.temp,
-                            tempMin = weatherList.main.tempMin.toString(),
-                            tempMax = weatherList.main.tempMax.toString(),
-                            humidity = weatherList.main.humidity
-                        ),
-                        weather = weatherList.weather.map { weatherData ->
-                            CurrentWeather.Weather(
-                                description = weatherData.description,
-                                icon = weatherData.icon
-                            )
-                        },
-                        dtTxt = weatherList.dt_txt
-                    )
-                }
-
-                binding.rcylrWeather.adapter = WeatherAdapter(dailyForecasts)
-                binding.rcylrWeather.layoutManager = LinearLayoutManager(requireContext())
-
-                binding.currentWeatherRcycl.adapter = CurrentWeatherAdapter(requireContext(), hourlyForecasts)
-                binding.currentWeatherRcycl.layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                viewModel.getCurrentWeather(location.latitude, location.longitude)
+                viewModel.getForecast(location.latitude, location.longitude)
             }
         }
     }
@@ -112,5 +101,3 @@ class WeatherFragment : Fragment() {
         _binding = null
     }
 }
-
-private fun WeatherViewModel.updateCoordinates(listOf: List<String>) {}

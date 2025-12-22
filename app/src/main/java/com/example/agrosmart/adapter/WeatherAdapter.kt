@@ -1,6 +1,5 @@
 package com.example.agrosmart.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,54 +8,32 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.agrosmart.R
-import com.example.agrosmart.model.WeatherList
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.agrosmart.model.ForecastItem
 
-class WeatherAdapter(private val weatherrootdatas: List<WeatherList>) :
+class WeatherAdapter(private val forecastItems: List<ForecastItem>) :
     RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
 
     class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val wedate: TextView = itemView.findViewById(R.id.weatherDate)
-        val wedesc: TextView = itemView.findViewById(R.id.weatherDescription)
-        val wemain: TextView = itemView.findViewById(R.id.weatherTemperature)
-        val welogo: ImageView = itemView.findViewById(R.id.weatherIcon)
+        val date: TextView = itemView.findViewById(R.id.date)
+        val icon: ImageView = itemView.findViewById(R.id.weatherIcon)
+        val temp: TextView = itemView.findViewById(R.id.temperature)
+        val description: TextView = itemView.findViewById(R.id.weatherDescription)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.single_weather, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_weather, parent, false)
         return WeatherViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return weatherrootdatas.size
-    }
-
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        val weathernew = weatherrootdatas[position]
+        val item = forecastItems[position]
+        holder.date.text = item.dtTxt.substring(0, 10)
+        holder.temp.text = "${item.main.temp.toInt()}°C"
+        holder.description.text = item.weather.firstOrNull()?.description ?: ""
 
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
-        val date: Date? = inputFormat.parse(weathernew.dt_txt.slice(0..9))
-        val outputDate = date?.let { outputFormat.format(it) } ?: ""
-
-        val we = weathernew.weather[0]
-        val we2 = weathernew.main
-        holder.wedate.text = outputDate
-        holder.wedesc.text = we.description.replaceFirstChar {
-            if (it.isLowerCase()) it.uppercase() else it.toString()
-        }
-        val temp = we2.temp - 273.15
-        holder.wemain.text = "${temp.toInt()}\u2103"
-
-        val iconcode = weathernew.weather[0].icon
-
-        val iconurl = "https://openweathermap.org/img/w/$iconcode.png"
-        Glide.with(holder.itemView.context)
-            .load(iconurl)
-            .into(holder.welogo)
+        val iconUrl = "https://openweathermap.org/img/w/${item.weather.firstOrNull()?.icon}.png"
+        Glide.with(holder.itemView.context).load(iconUrl).into(holder.icon)
     }
+
+    override fun getItemCount() = forecastItems.size
 }

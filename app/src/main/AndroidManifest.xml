@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- ✅ Splash Screen (Launcher) -->
+        <!-- Splash Screen (Launcher) -->
         <activity
             android:name=".view.introscreen.SplashScreen"
             android:exported="true"
@@ -51,7 +51,12 @@
         <!-- Dashboard -->
         <activity
             android:name=".view.dashboard.DashboardActivity"
-            android:exported="true" />
+            android:exported="false" />
+
+        <!-- Profile Activity -->
+        <activity
+            android:name=".view.profile.ProfileActivity"
+            android:exported="false" />
 
         <!-- RazorPay Screen -->
         <activity

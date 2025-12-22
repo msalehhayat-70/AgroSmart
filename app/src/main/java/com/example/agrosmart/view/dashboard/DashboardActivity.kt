@@ -2,24 +2,32 @@ package com.example.agrosmart.view.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.agrosmart.R
 import com.example.agrosmart.databinding.ActivityDashboardBinding
+import com.example.agrosmart.model.User
 import com.example.agrosmart.view.articles.ArticleListFragment
 import com.example.agrosmart.view.auth.LoginActivity
 import com.example.agrosmart.view.ecommerce.EcommerceFragment
 import com.example.agrosmart.view.ecommerce.MyOrdersFragment
 import com.example.agrosmart.view.pamra.PamraFragment
+import com.example.agrosmart.view.profile.ProfileActivity
 import com.example.agrosmart.view.socialmedia.SMCreatePostFragment
 import com.example.agrosmart.view.socialmedia.SocialMediaPostsFragment
 import com.example.agrosmart.view.weather.WeatherFragment
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,6 +48,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateNavHeader()
+    }
+
     private fun setupToolbarAndDrawer() {
         toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.appBarMain.toolbar, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle)
@@ -56,6 +69,34 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 R.id.bottomNavPost -> setCurrentFragment(SocialMediaPostsFragment(), "socialFrag")
             }
             true
+        }
+    }
+
+    private fun updateNavHeader() {
+        val headerView = binding.navView.getHeaderView(0)
+        val navUsername = headerView.findViewById<TextView>(R.id.navbarUserName)
+        val navUserEmail = headerView.findViewById<TextView>(R.id.navbarUserEmail)
+        val navUserImage = headerView.findViewById<ImageView>(R.id.navbarUserImage)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            navUserEmail.text = user.email
+            val db = FirebaseFirestore.getInstance()
+            db.collection("users").document(user.uid).get().addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val userProfile = document.toObject(User::class.java)
+                    if (userProfile != null) {
+                        navUsername.text = userProfile.name
+                        Glide.with(this).load(userProfile.profileImgUrl).placeholder(R.drawable.ic_launcher_foreground).into(navUserImage)
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("DashboardActivity", "Error getting user document", exception)
+            }
+        }
+
+        headerView.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 
@@ -86,7 +127,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             .setTitle("Log Out")
             .setMessage("Do you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
-                // Implement your own logout logic here
+                FirebaseAuth.getInstance().signOut()
                 Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()

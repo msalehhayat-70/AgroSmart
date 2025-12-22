@@ -1,13 +1,18 @@
 package com.example.agrosmart.view.dashboard
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.agrosmart.R
@@ -21,6 +26,7 @@ import com.example.agrosmart.view.scheme.SchemeListFragment
 import com.example.agrosmart.view.weather.WeatherFragment
 import com.example.agrosmart.viewmodel.EcommViewModel
 import com.example.agrosmart.viewmodel.WeatherViewModel
+import com.google.android.gms.location.LocationServices
 
 class DashboardFragment : Fragment(), CellClickListener {
 
@@ -31,8 +37,16 @@ class DashboardFragment : Fragment(), CellClickListener {
     private lateinit var schemeListFragment: SchemeListFragment
     private lateinit var articleListFragment: ArticleListFragment
 
-    private lateinit var weatherViewModel: WeatherViewModel
-    private lateinit var ecommViewModel: EcommViewModel
+    private val weatherViewModel: WeatherViewModel by viewModels()
+    private val eCommerceViewModel: EcommViewModel by viewModels()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            getCurrentLocation()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,45 +61,39 @@ class DashboardFragment : Fragment(), CellClickListener {
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.action_bar_title)
 
-        weatherViewModel = ViewModelProvider(requireActivity()).get(WeatherViewModel::class.java)
-        ecommViewModel = ViewModelProvider(requireActivity()).get(EcommViewModel::class.java)
-
         setupWeather()
-        setupEcommerce()
+        setupECommerce()
         setupNavigation()
+        checkLocationPermission()
     }
 
     private fun setupWeather() {
-        weatherViewModel.weatherData.observe(viewLifecycleOwner) { weatherData ->
-            if (_binding != null && weatherData != null && weatherData.list.isNotEmpty()) {
-                val firstWeather = weatherData.list[0]
-                binding.weathTempTextWeathFrag.text = getString(R.string.weather_temp, (firstWeather.main.temp - 273).toInt())
-                binding.humidityTextWeathFrag.text = getString(R.string.weather_humidity, firstWeather.main.humidity)
-                binding.windTextWeathFrag.text = getString(R.string.weather_wind, firstWeather.wind.speed)
-                val city = weatherViewModel.coordinates.value?.getOrNull(2) ?: getString(R.string.unknown_city)
-                binding.weatherCityTitle.text = city
-                val iconCode = firstWeather.weather[0].icon
+        weatherViewModel.currentWeather.observe(viewLifecycleOwner) { weather ->
+            if (_binding != null) {
+                binding.weathTempTextWeathFrag.text = getString(R.string.weather_temp, weather.main.temp.toInt())
+                binding.humidityTextWeathFrag.text = getString(R.string.weather_humidity, weather.main.humidity)
+                binding.windTextWeathFrag.text = getString(R.string.weather_wind, weather.wind.speed)
+                binding.weatherCityTitle.text = weather.name
+                val iconCode = weather.weather[0].icon
                 val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"
                 if (context != null) {
                     Glide.with(requireContext()).load(iconUrl).into(binding.weathIconImageWeathFrag)
                 }
             }
         }
-        // Set initial coordinates to trigger weather fetch
-        weatherViewModel.setCoordinates(listOf("23.0225", "72.5714", "Lahore"))
     }
 
-    private fun setupEcommerce() {
-        ecommViewModel.products.observe(viewLifecycleOwner) { products ->
+    private fun setupECommerce() {
+        eCommerceViewModel.products.observe(viewLifecycleOwner) { products ->
             val dashboardEcomItems = products.map { product ->
                 DashboardEcomItem(product.id, product.title, product.price.toString(), product.imageUrl)
             }
             val itemsToShow = dashboardEcomItems.indices.toList().shuffled().take(4)
-            val adapterEcomm = DashboardEcomItemAdapter(requireContext(), dashboardEcomItems, itemsToShow, this)
-            binding.dashboardEcommRecycler.adapter = adapterEcomm
+            val adapterECommerce = DashboardEcomItemAdapter(requireContext(), dashboardEcomItems, itemsToShow, this)
+            binding.dashboardEcommRecycler.adapter = adapterECommerce
             binding.dashboardEcommRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
         }
-        ecommViewModel.loadAllEcommItems()
+        eCommerceViewModel.loadAllEcommItems()
     }
 
     private fun setupNavigation() {
@@ -114,12 +122,36 @@ class DashboardFragment : Fragment(), CellClickListener {
             .commit()
     }
 
-    override fun onCellClickListener(name: String) {
-        val ecommerceItemFragment = EcommerceItemFragment()
+    private fun checkLocationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                getCurrentLocation()
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                weatherViewModel.getCurrentWeather(location.latitude, location.longitude)
+            }
+        }
+    }
+
+    override fun onCellClickListener(data: String) {
+        val eCommerceItemFragment = EcommerceItemFragment()
         val bundle = Bundle()
-        bundle.putString("productId", name)
-        ecommerceItemFragment.arguments = bundle
-        navigateTo(ecommerceItemFragment, "ecommerceItemFrag")
+        bundle.putString("productId", data)
+        eCommerceItemFragment.arguments = bundle
+        navigateTo(eCommerceItemFragment, "ecommerceItemFrag")
     }
 
     override fun onDestroyView() {
