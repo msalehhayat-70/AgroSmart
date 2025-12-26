@@ -12,6 +12,16 @@
         android:id="@+id/app_bar_main"
         layout="@layout/app_bar_main" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_ai_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_ai_chat"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@android:color/white" />
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

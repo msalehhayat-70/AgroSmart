@@ -3,15 +3,15 @@ package com.example.agrosmart.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitClient {
+object RetrofitClientWeather {
+    private const val BASE_URL = "https://api.openweathermap.org/"
 
-    private const val BASE_URL = "https://generativelanguage.googleapis.com/"
-
-    val api: GeminiApi by lazy {
-        Retrofit.Builder()
+    val instance: WeatherApiService by lazy {
+        val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(GeminiApi::class.java)
+
+        retrofit.create(WeatherApiService::class.java)
     }
 }

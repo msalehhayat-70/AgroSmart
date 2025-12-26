@@ -1,9 +1,7 @@
 package com.example.agrosmart.view.dashboard
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
@@ -14,9 +12,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.agrosmart.R
 import com.example.agrosmart.databinding.ActivityDashboardBinding
 import com.example.agrosmart.model.User
+import com.example.agrosmart.view.ChatbotActivity
 import com.example.agrosmart.view.articles.ArticleListFragment
 import com.example.agrosmart.view.auth.LoginActivity
 import com.example.agrosmart.view.ecommerce.EcommerceFragment
@@ -43,6 +43,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         setupToolbarAndDrawer()
         setupBottomNavigation()
+        setupFab()
 
         if (savedInstanceState == null) {
             setCurrentFragment(DashboardFragment(), "dashFrag")
@@ -74,6 +75,12 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
     }
 
+    private fun setupFab() {
+        binding.fabAiChat.setOnClickListener {
+            startActivity(Intent(this, ChatbotActivity::class.java))
+        }
+    }
+
     private fun updateNavHeader() {
         val headerView = binding.navView.getHeaderView(0)
         val navUsername = headerView.findViewById<TextView>(R.id.navbarUserName)
@@ -82,16 +89,18 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
+            Log.d(TAG, "User is logged in: ${user.email}")
             navUserEmail.text = user.email
             val db = FirebaseFirestore.getInstance()
             db.collection("users").document(user.uid).get().addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val userProfile = document.toObject(User::class.java)
                     if (userProfile != null) {
+                        Log.d(TAG, "User data: Name=${userProfile.name}, Image=${userProfile.profileImageString}")
                         navUsername.text = userProfile.name
                         if (userProfile.profileImageString.isNotEmpty()) {
-                            val decodedString = Base64.decode(userProfile.profileImageString, Base64.DEFAULT)
-                            val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                            val decodedString = android.util.Base64.decode(userProfile.profileImageString, android.util.Base64.DEFAULT)
+                            val decodedByte = android.graphics.BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
                             navUserImage.setImageBitmap(decodedByte)
                         }
                     }

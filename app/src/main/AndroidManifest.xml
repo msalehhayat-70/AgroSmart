@@ -3,11 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.agrosmart">
 
-    <!-- Permissions -->
+    <!-- Permissions (ONLY here) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.location.gps"
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
         tools:ignore="UnnecessaryRequiredFeature" />
 
     <application
@@ -16,7 +18,8 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/er"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
 
         <!-- Splash Screen (Launcher) -->
         <activity
@@ -29,36 +32,37 @@
             </intent-filter>
         </activity>
 
-        <!-- Intro Screen (Optional) -->
+        <!-- Other Activities -->
         <activity
             android:name=".view.introscreen.IntroActivity"
             android:exported="false"
             android:theme="@style/AppTheme2" />
 
-        <!-- Login Screen -->
         <activity
             android:name=".view.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/AppTheme2" />
 
-        <!-- Signup Screen -->
         <activity
             android:name=".view.auth.SignupActivity"
             android:exported="false"
             android:noHistory="true"
             android:theme="@style/AppTheme2" />
 
-        <!-- Dashboard -->
         <activity
             android:name=".view.dashboard.DashboardActivity"
             android:exported="false" />
 
-        <!-- Profile Activity -->
         <activity
             android:name=".view.profile.ProfileActivity"
             android:exported="false" />
 
-        <!-- RazorPay Screen -->
+        <!-- ✅ CHATBOT ACTIVITY (THIS ONE YOU USE) -->
+        <activity
+            android:name=".view.ChatbotActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
         <activity
             android:name=".view.ecommerce.RazorPayActivity"
             android:exported="false" />

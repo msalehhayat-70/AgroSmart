@@ -2,6 +2,7 @@ package com.example.agrosmart.view.dashboard
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.example.agrosmart.adapter.DashboardEcomItemAdapter
 import com.example.agrosmart.databinding.FragmentDashboardBinding
 import com.example.agrosmart.model.DashboardEcomItem
 import com.example.agrosmart.utilities.CellClickListener
+import com.example.agrosmart.view.ChatbotActivity
 import com.example.agrosmart.view.articles.ArticleListFragment
 import com.example.agrosmart.view.ecommerce.EcommerceItemFragment
 import com.example.agrosmart.view.scheme.SchemeListFragment
@@ -65,6 +67,11 @@ class DashboardFragment : Fragment(), CellClickListener {
         setupECommerce()
         setupNavigation()
         checkLocationPermission()
+
+        binding.fabChat.setOnClickListener {
+            val intent = Intent(requireContext(), ChatbotActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupWeather() {
