@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.ecommerce.RazorPayActivity">
+
+    <EditText
+        android:id="@+id/fullNamePrePay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint="Full Name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/localityPrePay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Locality"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/fullNamePrePay"
+        app:layout_constraintStart_toStartOf="@+id/fullNamePrePay"
+        app:layout_constraintTop_toBottomOf="@+id/fullNamePrePay" />
+
+    <EditText
+        android:id="@+id/cityPrePay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="City"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/localityPrePay"
+        app:layout_constraintStart_toStartOf="@+id/localityPrePay"
+        app:layout_constraintTop_toBottomOf="@+id/localityPrePay" />
+
+    <EditText
+        android:id="@+id/statePrePay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="State"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/cityPrePay"
+        app:layout_constraintStart_toStartOf="@+id/cityPrePay"
+        app:layout_constraintTop_toBottomOf="@+id/cityPrePay" />
+
+    <EditText
+        android:id="@+id/pincodePrePay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Pincode"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/statePrePay"
+        app:layout_constraintStart_toStartOf="@+id/statePrePay"
+        app:layout_constraintTop_toBottomOf="@+id/statePrePay" />
+
+    <EditText
+        android:id="@+id/mobileNumberPrePay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Mobile Number"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="@+id/pincodePrePay"
+        app:layout_constraintStart_toStartOf="@+id/pincodePrePay"
+        app:layout_constraintTop_toBottomOf="@+id/pincodePrePay" />
+
+    <TextView
+        android:id="@+id/netValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/mobileNumberPrePay"
+        app:layout_constraintStart_toStartOf="@+id/mobileNumberPrePay"
+        app:layout_constraintTop_toBottomOf="@+id/mobileNumberPrePay" />
+
+    <Button
+        android:id="@+id/orderNowBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Order Now"
+        app:layout_constraintEnd_toEndOf="@+id/netValue"
+        app:layout_constraintStart_toStartOf="@+id/netValue"
+        app:layout_constraintTop_toBottomOf="@+id/netValue" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
