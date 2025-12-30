@@ -13,6 +13,13 @@
         android:icon="@drawable/ic_shopping_cart_black_24dp"
         android:title="Shop" />
     <item
+<<<<<<< HEAD
+=======
+        android:id="@+id/bottomNavCart"
+        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:title="Cart" />
+    <item
+>>>>>>> main
         android:id="@+id/bottomNavPost"
         android:icon="@drawable/ic_post_add_black_24dp"
         android:title="Post" />

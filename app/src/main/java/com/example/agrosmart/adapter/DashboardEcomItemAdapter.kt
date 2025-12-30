@@ -41,7 +41,11 @@ class DashboardEcomItemAdapter(
         val currentData = allData[itemsToShow[position]]
 
         holder.itemTitle.text = currentData.title
+<<<<<<< HEAD
         holder.itemPrice.text = "\u20B9${currentData.price}"
+=======
+        holder.itemPrice.text = "Rs${currentData.price}"
+>>>>>>> main
         Glide.with(context).load(currentData.imageUrl[0]).into(holder.itemImage)
         holder.itemView.setOnClickListener {
             cellClickListener.onCellClickListener(currentData.id)

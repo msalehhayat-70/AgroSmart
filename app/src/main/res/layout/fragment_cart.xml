@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".view.ecommerce.CartFragment">
 
+<<<<<<< HEAD
     <ProgressBar
         android:id="@+id/progress_cart"
         android:layout_width="wrap_content"
@@ -64,3 +65,20 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+=======
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cartRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkoutButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/checkoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Checkout"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+>>>>>>> main

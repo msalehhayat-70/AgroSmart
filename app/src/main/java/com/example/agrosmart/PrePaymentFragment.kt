@@ -44,7 +44,11 @@ class PrePaymentFragment : Fragment(), PaymentResultListener {
             //You can omit the image option to fetch the image from the dashboard
             options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.jpg")
             options.put("theme.color", "#3399cc");
+<<<<<<< HEAD
             options.put("currency", "INR");
+=======
+            options.put("currency", "PKR");
+>>>>>>> main
             options.put("amount", "10000")//pass amount in currency subunits
 
             val retryObj = JSONObject();

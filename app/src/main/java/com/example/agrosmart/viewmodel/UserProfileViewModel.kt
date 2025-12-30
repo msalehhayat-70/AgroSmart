@@ -6,6 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.agrosmart.model.SMPost
 import com.example.agrosmart.model.UserData
+<<<<<<< HEAD
+=======
+import java.util.Date
+>>>>>>> main
 
 class UserProfileViewModel : ViewModel() {
 
@@ -31,8 +35,13 @@ class UserProfileViewModel : ViewModel() {
 
         _userPosts.postValue(
             listOf(
+<<<<<<< HEAD
                 SMPost("John Doe", "My First Post", "Loving the new AgroSmart app!", System.currentTimeMillis(), null, "text", "1"),
                 SMPost("John Doe", "Great Harvest", "Had a great harvest this season.", System.currentTimeMillis(), "https://via.placeholder.com/400x200.png?text=Harvest", "image", "2")
+=======
+                SMPost(name = "John Doe", title = "My First Post", description = "Loving the new AgroSmart app!", timeStamp = Date(System.currentTimeMillis()), imageUrl = null, uploadType = "text", userID = "1"),
+                SMPost(name = "John Doe", title = "Great Harvest", description = "Had a great harvest this season.", timeStamp = Date(System.currentTimeMillis()), imageUrl = "https://via.placeholder.com/400x200.png?text=Harvest", uploadType = "image", userID = "2")
+>>>>>>> main
             )
         )
     }

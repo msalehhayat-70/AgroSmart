@@ -21,8 +21,15 @@ import com.example.agrosmart.adapter.DashboardEcomItemAdapter
 import com.example.agrosmart.databinding.FragmentDashboardBinding
 import com.example.agrosmart.model.DashboardEcomItem
 import com.example.agrosmart.utilities.CellClickListener
+<<<<<<< HEAD
 import com.example.agrosmart.view.ChatbotActivity
 import com.example.agrosmart.view.articles.ArticleListFragment
+=======
+import com.example.agrosmart.view.articles.ArticleListFragment
+import com.example.agrosmart.view.article.DiseasesActivity
+import com.example.agrosmart.view.article.MethodsActivity
+import com.example.agrosmart.view.article.PlantsActivity
+>>>>>>> main
 import com.example.agrosmart.view.ecommerce.EcommerceItemFragment
 import com.example.agrosmart.view.scheme.SchemeListFragment
 import com.example.agrosmart.view.weather.WeatherFragment
@@ -67,11 +74,14 @@ class DashboardFragment : Fragment(), CellClickListener {
         setupECommerce()
         setupNavigation()
         checkLocationPermission()
+<<<<<<< HEAD
 
         binding.fabChat.setOnClickListener {
             val intent = Intent(requireContext(), ChatbotActivity::class.java)
             startActivity(intent)
         }
+=======
+>>>>>>> main
     }
 
     private fun setupWeather() {
@@ -112,6 +122,24 @@ class DashboardFragment : Fragment(), CellClickListener {
             navigateTo(weatherFragment, "weatherFrag")
         }
 
+<<<<<<< HEAD
+=======
+        binding.cat1.setOnClickListener {
+            val intent = Intent(requireContext(), PlantsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.cat2.setOnClickListener {
+            val intent = Intent(requireContext(), MethodsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.cat3.setOnClickListener {
+            val intent = Intent(requireContext(), DiseasesActivity::class.java)
+            startActivity(intent)
+        }
+
+>>>>>>> main
         binding.cat4.setOnClickListener {
             navigateTo(schemeListFragment, "schemeListFrag")
         }

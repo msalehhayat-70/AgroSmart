@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+<<<<<<< HEAD
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -17,18 +18,27 @@ import com.example.agrosmart.model.PamraCustomRecords
 import com.example.agrosmart.viewmodel.PamraViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+=======
+import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.example.agrosmart.databinding.FragmentPamraBinding
+>>>>>>> main
 
 class PamraFragment : Fragment() {
 
     private var _binding: FragmentPamraBinding? = null
     private val binding get() = _binding!!
 
+<<<<<<< HEAD
     private val viewModel: PamraViewModel by viewModels()
     private lateinit var adapter: PamraAdapter
 
     private var states: Array<String>? = null
     private var districts: Map<String, Array<String>>? = null
 
+=======
+>>>>>>> main
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,6 +52,7 @@ class PamraFragment : Fragment() {
 
         (activity as AppCompatActivity).supportActionBar?.title = "PAMRA"
 
+<<<<<<< HEAD
         setupUI()
         setupObservers()
     }
@@ -114,6 +125,10 @@ class PamraFragment : Fragment() {
         adapter = PamraAdapter(data)
         binding.recyclePamra.adapter = adapter
         binding.recyclePamra.layoutManager = LinearLayoutManager(requireContext())
+=======
+        binding.pamraWebview.webViewClient = WebViewClient()
+        binding.pamraWebview.loadUrl("http://www.amis.pk/Daily%20Market%20Changes.aspx");
+>>>>>>> main
     }
 
     override fun onDestroyView() {

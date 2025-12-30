@@ -1,10 +1,14 @@
 package com.example.agrosmart.view.ecommerce
 
+<<<<<<< HEAD
 import android.content.Intent
+=======
+>>>>>>> main
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+<<<<<<< HEAD
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -25,10 +29,17 @@ class CartFragment : Fragment(), CartItemBuy {
 
     private val viewModel: EcommViewModel by viewModels()
     private lateinit var cartAdapter: CartItemsAdapter
+=======
+import androidx.fragment.app.Fragment
+import com.example.agrosmart.R
+
+class CartFragment : Fragment() {
+>>>>>>> main
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+<<<<<<< HEAD
     ): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Cart"
@@ -102,3 +113,10 @@ class CartFragment : Fragment(), CartItemBuy {
         viewModel.getCartItems()
     }
 }
+=======
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_cart, container, false)
+    }
+}
+>>>>>>> main

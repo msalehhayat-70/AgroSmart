@@ -34,7 +34,11 @@ class SchemeListFragment : Fragment(), CellClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+<<<<<<< HEAD
         (activity as AppCompatActivity).supportActionBar?.title = "Krishi Scheme"
+=======
+        (activity as AppCompatActivity).supportActionBar?.title = "Zara'i Scheme"
+>>>>>>> main
 
         viewModel = ViewModelProvider(requireActivity()).get(SchemeViewModel::class.java)
         viewModel.getAllSchemes()

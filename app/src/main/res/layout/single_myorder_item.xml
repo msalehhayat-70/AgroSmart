@@ -67,7 +67,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="7dp"
+<<<<<<< HEAD
                 android:text="Delivery Charge: Rs"
+=======
+                android:text="Delivery Charge: Rs "
+>>>>>>> main
                 android:textColor="@color/fontColor"
                 android:textSize="10sp"
                 android:textStyle="italic"

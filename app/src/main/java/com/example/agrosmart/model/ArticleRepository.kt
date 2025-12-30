@@ -11,6 +11,7 @@ class ArticleRepository {
     private val _article = MutableLiveData<Article?>()
     val article: LiveData<Article?> = _article
 
+<<<<<<< HEAD
     fun getAllArticles() {
         // This is placeholder data since Firebase is removed.
         // In a real app, this would come from a local database or a different backend.
@@ -19,15 +20,28 @@ class ArticleRepository {
             Article(title = "Advanced Techniques for Wheat Cultivation", images = listOf("")),
             Article(title = "Organic Pesticides for a Healthy Garden", images = listOf(""))
         )
+=======
+    private val placeholderArticles = listOf(
+        Article(title = "The Ultimate Guide to Tomato Farming", images = listOf("tomato")),
+        Article(title = "Advanced Techniques for Wheat Cultivation", images = listOf("wheat")),
+        Article(title = "Organic Pesticides for a Healthy Garden", images = listOf("pesticides"))
+    )
+
+    fun getAllArticles() {
+>>>>>>> main
         _articles.postValue(placeholderArticles)
     }
 
     fun getSpecificFruitArticle(name: String) {
+<<<<<<< HEAD
         // This is placeholder data since Firebase is removed.
         val placeholderArticle = Article(
             title = name,
             images = listOf("https://via.placeholder.com/400x200.png?text=$name")
         )
         _article.postValue(placeholderArticle)
+=======
+        _article.postValue(placeholderArticles.find { it.title == name })
+>>>>>>> main
     }
 }

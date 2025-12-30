@@ -10,6 +10,11 @@
         android:id="@+id/postsRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
+<<<<<<< HEAD
+=======
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
+>>>>>>> main
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +24,12 @@
         android:id="@+id/createPostFloating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:layout_margin="16dp"
+=======
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="96dp"
+>>>>>>> main
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

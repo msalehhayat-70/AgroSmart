@@ -12,6 +12,7 @@
         android:id="@+id/app_bar_main"
         layout="@layout/app_bar_main" />
 
+<<<<<<< HEAD
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_ai_chat"
         android:layout_width="wrap_content"
@@ -22,6 +23,8 @@
         app:backgroundTint="@color/colorPrimary"
         app:tint="@android:color/white" />
 
+=======
+>>>>>>> main
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -30,4 +33,8 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_drawer_menu" />
 
+<<<<<<< HEAD
 </androidx.drawerlayout.widget.DrawerLayout>
+=======
+</androidx.drawerlayout.widget.DrawerLayout>
+>>>>>>> main

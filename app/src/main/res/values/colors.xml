@@ -22,5 +22,8 @@
                 android:color="@color/secondary" />
         </selector>
     </color>
+<<<<<<< HEAD
     <color name="primary">#CDDC39</color>
+=======
+>>>>>>> main
 </resources>

@@ -33,7 +33,11 @@ class RazorPayActivity : AppCompatActivity(), PaymentResultListener {
         }
 
         val totalCost = (itemCost * quantity) + deliveryCost
+<<<<<<< HEAD
         binding.netValue.text = "Net Value: ₹$totalCost"
+=======
+        binding.netValue.text = "Net Value: Rs$totalCost"
+>>>>>>> main
 
         binding.orderNowBtn.setOnClickListener {
             if (validateInput()) {
@@ -63,7 +67,11 @@ class RazorPayActivity : AppCompatActivity(), PaymentResultListener {
                 put("name", "AgroSmart")
                 put("description", "Order Payment")
                 put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png")
+<<<<<<< HEAD
                 put("currency", "INR")
+=======
+                put("currency", "PKR")
+>>>>>>> main
                 put("amount", "${totalCost * 100}")
 
                 val prefill = JSONObject().apply {

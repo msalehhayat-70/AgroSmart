@@ -46,7 +46,11 @@ class EcommViewModel : ViewModel() {
     private fun processCartItems(cartItems: List<CartItem>, products: List<Product>) {
         val productsById = products.associateBy { it.id }
         val detailedCartItems = cartItems.mapNotNull { cartItem ->
+<<<<<<< HEAD
             productsById[cartItem.key]?.let { product ->
+=======
+            productsById[cartItem.productId]?.let { product ->
+>>>>>>> main
                 Pair(cartItem, product)
             }
         }

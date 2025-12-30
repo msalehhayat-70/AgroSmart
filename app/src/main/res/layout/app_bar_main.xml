@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+=======
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+>>>>>>> main
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,19 +29,36 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+<<<<<<< HEAD
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+=======
+        android:layout_below="@id/appBarLayout"
+        android:layout_above="@id/bottomNav" />
+>>>>>>> main
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
         app:backgroundTint="#4CAF50"
         app:itemIconTint="@drawable/bottom_nav_icon_tint"
+=======
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:backgroundTint="#4CAF50"
+        app:itemIconTint="@color/bottom_nav_icon_tint"
+        app:itemTextColor="@color/bottom_nav_icon_tint"
+>>>>>>> main
         app:labelVisibilityMode="labeled"
         app:menu="@menu/dash_menu"
         tools:ignore="VisualLintBottomNav" />
 
+<<<<<<< HEAD
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+=======
+</RelativeLayout>
+>>>>>>> main

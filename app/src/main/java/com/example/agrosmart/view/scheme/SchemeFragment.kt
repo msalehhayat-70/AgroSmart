@@ -31,7 +31,11 @@ class SchemeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+<<<<<<< HEAD
         (activity as AppCompatActivity).supportActionBar?.title = "Krishi Scheme"
+=======
+        (activity as AppCompatActivity).supportActionBar?.title = "Zara'i Scheme"
+>>>>>>> main
 
         viewModel = ViewModelProvider(requireActivity()).get(SchemeViewModel::class.java)
 
@@ -50,7 +54,18 @@ class SchemeFragment : Fragment() {
                 binding.schemeLaunchedBy.text = scheme.headedBy
 
                 if (!scheme.image.isNullOrEmpty()) {
+<<<<<<< HEAD
                     Glide.with(this).load(scheme.image).into(binding.schemeImage)
+=======
+                    val imageResId = requireContext().resources.getIdentifier(scheme.image, "drawable", requireContext().packageName)
+                    if (imageResId != 0) {
+                        Glide.with(this).load(imageResId).into(binding.schemeImage)
+                    } else {
+                        binding.schemeImage.setImageResource(R.drawable.scheme)
+                    }
+                } else {
+                    binding.schemeImage.setImageResource(R.drawable.scheme)
+>>>>>>> main
                 }
 
                 var eligibilityText = ""

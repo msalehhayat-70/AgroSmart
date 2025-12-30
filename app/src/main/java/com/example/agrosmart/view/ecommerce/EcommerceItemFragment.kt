@@ -12,6 +12,11 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.agrosmart.databinding.FragmentEcommerceItemBinding
 import com.example.agrosmart.viewmodel.EcommViewModel
+<<<<<<< HEAD
+=======
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+>>>>>>> main
 
 class EcommerceItemFragment : Fragment() {
 
@@ -40,7 +45,36 @@ class EcommerceItemFragment : Fragment() {
         setupObservers()
 
         binding.addToCartButton.setOnClickListener {
+<<<<<<< HEAD
             Toast.makeText(requireContext(), "Add to cart clicked", Toast.LENGTH_SHORT).show()
+=======
+            val product = viewModel.product.value
+            if (product != null) {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                if (userId != null) {
+                    val cartItem = hashMapOf(
+                        "productId" to product.id,
+                        "title" to product.title,
+                        "price" to product.price,
+                        "imageUrl" to product.imageUrl[0],
+                        "quantity" to 1
+                    )
+
+                    FirebaseFirestore.getInstance().collection("users").document(userId)
+                        .collection("cart").document(product.id).set(cartItem)
+                        .addOnSuccessListener {
+                            Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(
+                                requireContext(),
+                                "Failed to add to cart: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
+            }
+>>>>>>> main
         }
     }
 
@@ -50,7 +84,11 @@ class EcommerceItemFragment : Fragment() {
             if (product != null) {
                 (activity as? AppCompatActivity)?.supportActionBar?.title = product.title
                 binding.productTitle.text = product.title
+<<<<<<< HEAD
                 binding.productPrice.text = "\u20B9${product.price}"
+=======
+                binding.productPrice.text = "Rs ${product.price}"
+>>>>>>> main
                 binding.productRetailer.text = product.retailer
 
                 if (product.imageUrl.isNotEmpty()) {

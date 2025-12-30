@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.agrosmart">
 
+<<<<<<< HEAD
     <!-- Permissions (ONLY here) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -10,6 +11,13 @@
 
     <uses-feature
         android:name="android.hardware.location.gps"
+=======
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.location.gps"
+>>>>>>> main
         tools:ignore="UnnecessaryRequiredFeature" />
 
     <application
@@ -18,8 +26,13 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/er"
         android:supportsRtl="true"
+<<<<<<< HEAD
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+=======
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme">
+>>>>>>> main
 
         <!-- Splash Screen (Launcher) -->
         <activity
@@ -32,37 +45,67 @@
             </intent-filter>
         </activity>
 
+<<<<<<< HEAD
         <!-- Other Activities -->
+=======
+        <!-- Intro Screen (Optional) -->
+>>>>>>> main
         <activity
             android:name=".view.introscreen.IntroActivity"
             android:exported="false"
             android:theme="@style/AppTheme2" />
 
+<<<<<<< HEAD
+=======
+        <!-- Login Screen -->
+>>>>>>> main
         <activity
             android:name=".view.auth.LoginActivity"
             android:exported="false"
             android:theme="@style/AppTheme2" />
 
+<<<<<<< HEAD
+=======
+        <!-- Signup Screen -->
+>>>>>>> main
         <activity
             android:name=".view.auth.SignupActivity"
             android:exported="false"
             android:noHistory="true"
             android:theme="@style/AppTheme2" />
 
+<<<<<<< HEAD
+=======
+        <!-- Dashboard -->
+>>>>>>> main
         <activity
             android:name=".view.dashboard.DashboardActivity"
             android:exported="false" />
 
+<<<<<<< HEAD
+=======
+        <!-- Profile Activity -->
+>>>>>>> main
         <activity
             android:name=".view.profile.ProfileActivity"
             android:exported="false" />
 
+<<<<<<< HEAD
         <!-- ✅ CHATBOT ACTIVITY (THIS ONE YOU USE) -->
         <activity
             android:name=".view.ChatbotActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+=======
+        <!-- Article Activities -->
+        <activity android:name=".view.article.PlantsActivity" />
+        <activity android:name=".view.article.MethodsActivity" />
+        <activity android:name=".view.article.DiseasesActivity" />
+        <activity android:name=".view.article.ArticleDetailActivity" />
+
+        <!-- RazorPay Screen -->
+>>>>>>> main
         <activity
             android:name=".view.ecommerce.RazorPayActivity"
             android:exported="false" />
@@ -76,6 +119,19 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+<<<<<<< HEAD
+=======
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+>>>>>>> main
     </application>
 
 </manifest>

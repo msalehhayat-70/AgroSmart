@@ -37,14 +37,34 @@ class SchemeAdapter(
 
     override fun onBindViewHolder(holder: SchemeViewHolder, position: Int) {
         val singleScheme = schemeData[position]
+<<<<<<< HEAD
+=======
+        val context = holder.itemView.context
+>>>>>>> main
 
         holder.schemeName.text = singleScheme.title
         holder.schemeStatus.text = singleScheme.status
         holder.schemeDate.text = singleScheme.launch
 
         if (!singleScheme.image.isNullOrEmpty()) {
+<<<<<<< HEAD
             Glide.with(holder.itemView.context)
                 .load(singleScheme.image)
+=======
+            val imageResId = context.resources.getIdentifier(singleScheme.image, "drawable", context.packageName)
+            if (imageResId != 0) {
+                 Glide.with(context)
+                    .load(imageResId)
+                    .into(holder.schemeImage)
+            } else {
+                 Glide.with(context)
+                    .load(R.drawable.scheme) // fallback drawable
+                    .into(holder.schemeImage)
+            }
+        } else {
+            Glide.with(context)
+                .load(R.drawable.scheme) // fallback drawable
+>>>>>>> main
                 .into(holder.schemeImage)
         }
 

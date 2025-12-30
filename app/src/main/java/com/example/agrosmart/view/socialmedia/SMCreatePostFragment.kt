@@ -9,7 +9,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+<<<<<<< HEAD
 import androidx.fragment.app.viewModels
+=======
+import androidx.fragment.app.activityViewModels
+>>>>>>> main
 import com.example.agrosmart.R
 import com.example.agrosmart.databinding.FragmentSmCreatePostBinding
 import com.example.agrosmart.viewmodel.SocialViewModel
@@ -19,7 +23,11 @@ class SMCreatePostFragment : Fragment() {
     private var _binding: FragmentSmCreatePostBinding? = null
     private val binding get() = _binding!!
 
+<<<<<<< HEAD
     private val viewModel: SocialViewModel by viewModels()
+=======
+    private val viewModel: SocialViewModel by activityViewModels()
+>>>>>>> main
     private var selectedImageUri: Uri? = null
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -59,7 +67,11 @@ class SMCreatePostFragment : Fragment() {
                 return@setOnClickListener
             }
 
+<<<<<<< HEAD
             viewModel.createPost(title, description, selectedImageUri)
+=======
+            viewModel.createPost(requireContext(), title, description, selectedImageUri)
+>>>>>>> main
         }
     }
 

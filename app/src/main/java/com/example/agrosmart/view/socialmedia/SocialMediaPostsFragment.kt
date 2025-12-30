@@ -6,7 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+<<<<<<< HEAD
 import androidx.fragment.app.viewModels
+=======
+import androidx.fragment.app.activityViewModels
+>>>>>>> main
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.agrosmart.R
 import com.example.agrosmart.adapter.SMPostListAdapter
@@ -18,7 +22,11 @@ class SocialMediaPostsFragment : Fragment() {
     private var _binding: FragmentSocialMediaPostsBinding? = null
     private val binding get() = _binding!!
 
+<<<<<<< HEAD
     private val viewModel: SocialViewModel by viewModels()
+=======
+    private val viewModel: SocialViewModel by activityViewModels()
+>>>>>>> main
     private lateinit var postAdapter: SMPostListAdapter
 
     override fun onCreateView(
@@ -36,21 +44,34 @@ class SocialMediaPostsFragment : Fragment() {
         setupRecyclerView()
         setupClickListeners()
         setupObservers()
+<<<<<<< HEAD
 
         viewModel.loadPosts()
+=======
+>>>>>>> main
     }
 
     private fun setupObservers() {
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
             if (posts != null) {
+<<<<<<< HEAD
                 postAdapter = SMPostListAdapter(requireActivity(), viewLifecycleOwner, posts, viewModel)
                 binding.postsRecycler.adapter = postAdapter
+=======
+                postAdapter.updatePosts(posts)
+>>>>>>> main
             }
         }
     }
 
     private fun setupRecyclerView() {
+<<<<<<< HEAD
         binding.postsRecycler.layoutManager = LinearLayoutManager(requireContext())
+=======
+        postAdapter = SMPostListAdapter(requireActivity(), viewLifecycleOwner, emptyList(), viewModel)
+        binding.postsRecycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.postsRecycler.adapter = postAdapter
+>>>>>>> main
     }
 
     private fun setupClickListeners() {

@@ -41,7 +41,11 @@ class EcommerceAdapter(
         val currentProduct = productList[position]
 
         holder.ecommTitle.text = currentProduct.title
+<<<<<<< HEAD
         holder.ecommPrice.text = "\u20B9${currentProduct.price}"
+=======
+        holder.ecommPrice.text = "Rs${currentProduct.price}"
+>>>>>>> main
         holder.ecommRetailer.text = currentProduct.retailer
         holder.ecommItemAvailability.text = currentProduct.availability
 

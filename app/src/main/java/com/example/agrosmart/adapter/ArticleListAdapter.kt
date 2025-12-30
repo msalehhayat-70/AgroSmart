@@ -35,6 +35,10 @@ class ArticleListAdapter(
 
     override fun onBindViewHolder(holder: ArticleListViewHolder, position: Int) {
         val singleArticle = articleListData[position]
+<<<<<<< HEAD
+=======
+        val context = holder.itemView.context
+>>>>>>> main
 
         holder.articleName.text = singleArticle.title
 
@@ -43,8 +47,24 @@ class ArticleListAdapter(
         }
 
         if (singleArticle.images.isNotEmpty()) {
+<<<<<<< HEAD
             Glide.with(holder.itemView.context)
                 .load(singleArticle.images[0])
+=======
+            val imageResId = context.resources.getIdentifier(singleArticle.images[0], "drawable", context.packageName)
+            if (imageResId != 0) {
+                 Glide.with(context)
+                    .load(imageResId)
+                    .into(holder.articleImage)
+            } else {
+                 Glide.with(context)
+                    .load(R.drawable.scheme) // fallback drawable
+                    .into(holder.articleImage)
+            }
+        } else {
+            Glide.with(context)
+                .load(R.drawable.scheme) // fallback drawable
+>>>>>>> main
                 .into(holder.articleImage)
         }
     }

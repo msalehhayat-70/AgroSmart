@@ -83,10 +83,28 @@
         android:text="2 Minutes Ago"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@id/userProfileImageCard"
+<<<<<<< HEAD
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/userProfileImageCard"
         tools:ignore="HardcodedText,SmallSp,VisualLintOverlap" />
 
+=======
+        app:layout_constraintEnd_toStartOf="@+id/delete_post_icon"
+        app:layout_constraintTop_toTopOf="@id/userProfileImageCard"
+        tools:ignore="HardcodedText,SmallSp,VisualLintOverlap" />
+
+    <ImageView
+        android:id="@+id/delete_post_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@android:drawable/ic_menu_delete"
+        app:layout_constraintBottom_toBottomOf="@id/userProfileImageCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/userProfileImageCard"
+        android:contentDescription="Delete Post"/>
+
+>>>>>>> main
 
     <ImageView
         android:id="@+id/postImageSM"

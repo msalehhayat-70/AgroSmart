@@ -42,7 +42,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
                     android:scaleType="fitXY"
+<<<<<<< HEAD
                     android:src="@color/secondary"
+=======
+                    android:src="@drawable/scheme"
+>>>>>>> main
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

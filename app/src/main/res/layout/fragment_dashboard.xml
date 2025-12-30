@@ -9,6 +9,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+<<<<<<< HEAD
+=======
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
+>>>>>>> main
         tools:ignore="UselessParent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -320,6 +325,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+<<<<<<< HEAD
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_chat"
@@ -333,4 +339,6 @@
         app:tint="@android:color/white"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
+=======
+>>>>>>> main
 </FrameLayout>

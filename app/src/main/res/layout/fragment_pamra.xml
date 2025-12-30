@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".view.pamra.PamraFragment">
 
+<<<<<<< HEAD
     <ProgressBar
         android:id="@+id/progress_pamra"
         style="?android:attr/progressBarStyle"
@@ -81,5 +82,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_value_text_pamra" />
+=======
+    <WebView
+        android:id="@+id/pamra_webview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> main
 
 </androidx.constraintlayout.widget.ConstraintLayout>
