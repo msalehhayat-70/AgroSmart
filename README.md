@@ -33,9 +33,5 @@ This project is built with modern Android development practices and a robust, sc
 *   **Payment Gateway:** **Razorpay** for secure and reliable in-app payment processing.
 *   **Location Services:** **Google Play Services** for fetching the user's location for weather data.
 
-## 🚀 Setup and Installation
 
-To get this project running on your local machine, follow these steps:
-
-1.  **Clone the repository:**
     
